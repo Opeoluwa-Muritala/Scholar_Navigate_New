@@ -22,14 +22,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.scholarnavigate.navigate.navmodule.AuthScreen
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import com.example.scholarnavigate.ui.theme.primaryDark
 import com.example.scholarnavigate.ui.theme.primaryLight
 import kotlinx.coroutines.delay
 
 @Composable
-fun AnimatedSplashScreen(navController: NavHostController) {
+fun AnimatedSplashScreen(navController: NavController) {
     var startAnimation by remember {
         mutableStateOf(false)
     }
@@ -41,7 +43,12 @@ fun AnimatedSplashScreen(navController: NavHostController) {
     )
     LaunchedEffect(key1 = true){
         startAnimation = true
-        delay(4000)
+        delay(2000)
+        startAnimation = false
+        delay(2000)
+        startAnimation = true
+        delay(1000)
+        navController.navigate(AuthScreen.Login.route)
     }
     Splash(alphaAnim.value)
 }
