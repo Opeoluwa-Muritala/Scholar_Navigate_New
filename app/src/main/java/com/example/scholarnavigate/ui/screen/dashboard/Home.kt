@@ -10,7 +10,11 @@ import com.example.scholarnavigate.navigate.HomeNavGraph
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(navController: NavHostController = rememberNavController()) {
-    Scaffold {
+    Scaffold(
+        bottomBar = {
+            BottomNavGraph(navController = navController)
+        }
+    ) {
         HomeNavGraph()
     }
 }

@@ -5,6 +5,3 @@ sealed class AuthScreen(val route: String){
     object Splash: AuthScreen("splash")
 }
 
-sealed class HomeScreen(val route: String){
-    object Dashboard: HomeScreen("dashboard")
-}

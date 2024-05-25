@@ -1,0 +1,75 @@
+package com.example.scholarnavigate.ui.screen.dashboard
+
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.scholarnavigate.navigate.navmodule.BottomBarScreen
+import com.example.scholarnavigate.ui.theme.secondaryContainerDark
+import com.example.scholarnavigate.ui.theme.secondaryContainerLight
+
+@Composable
+fun BottomNavGraph(navController: NavHostController) {
+    val screens = listOf(
+        BottomBarScreen.Dashboard,
+        BottomBarScreen.Calender,
+        BottomBarScreen.Resources,
+        BottomBarScreen.Settings,
+    )
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+
+    val bottomBarDestination = screens.any{ it.route == currentDestination?.route}
+    if (bottomBarDestination){
+        NavigationBar {
+            screens.forEach{screen ->
+                AddItem(
+                    screen = screen,
+                    currentDestination = currentDestination,
+                    navController = navController
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun RowScope.AddItem(
+    screen: BottomBarScreen,
+    currentDestination: NavDestination?,
+    navController: NavHostController
+) {
+    NavigationBarItem(selected = currentDestination?.hierarchy?.any{
+                                                                   it.route == screen.route
+    } == true,
+        onClick = { navController.navigate(screen.route){
+            popUpToRoute
+        } },
+        icon = { 
+               Icon(painterResource(id = screen.icon), contentDescription = screen.route)
+        },
+        label = {
+            Text(text = screen.route)
+        },
+        colors = NavigationBarItemDefaults.colors(
+            selectedIconColor = if (isSystemInDarkTheme()) secondaryContainerDark  else secondaryContainerLight,
+            selectedTextColor = if (isSystemInDarkTheme()) secondaryContainerDark  else secondaryContainerLight,
+            indicatorColor = if (isSystemInDarkTheme()) secondaryContainerDark  else secondaryContainerLight,
+            unselectedIconColor = Color.Black,
+            unselectedTextColor = Color.Black,
+        )
+    )
+}

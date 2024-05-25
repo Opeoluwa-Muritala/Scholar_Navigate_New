@@ -5,7 +5,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.scholarnavigate.navigate.navmodule.AuthScreen
-import com.example.scholarnavigate.navigate.navmodule.HomeScreen
 import com.example.scholarnavigate.ui.screen.Login.LoginUi
 import com.example.scholarnavigate.ui.screen.splash.AnimatedSplashScreen
 
