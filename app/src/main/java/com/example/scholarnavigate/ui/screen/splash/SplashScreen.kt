@@ -38,14 +38,14 @@ fun AnimatedSplashScreen(navController: NavController) {
     val alphaAnim = animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
         animationSpec = tween(
-            3000
+            2000
         ), label = ""
     )
     LaunchedEffect(key1 = true){
         startAnimation = true
-        delay(2000)
+        delay(1000)
         startAnimation = false
-        delay(2000)
+        delay(1000)
         startAnimation = true
         delay(1000)
         navController.navigate(AuthScreen.Login.route)
