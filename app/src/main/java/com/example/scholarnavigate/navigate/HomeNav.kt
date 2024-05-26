@@ -7,13 +7,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.scholarnavigate.navigate.navmodule.BottomBarScreen
-import com.example.scholarnavigate.ui.screen.dashboard.Dashboard
+import com.example.scholarnavigate.ui.screen.dashboard.DashboardScreen
 
 @Composable
 fun HomeNavGraph(navController: NavHostController = rememberNavController()){
     NavHost(navController = navController, route = Graph.HOME , startDestination = BottomBarScreen.Dashboard.route){
         composable(BottomBarScreen.Dashboard.route){
-            Dashboard()
+            DashboardScreen()
         }
         composable(BottomBarScreen.Settings.route){
 

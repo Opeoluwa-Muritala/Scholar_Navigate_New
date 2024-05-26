@@ -36,40 +36,28 @@ fun BottomNavGraph(navController: NavHostController) {
     if (bottomBarDestination){
         NavigationBar {
             screens.forEach{screen ->
-                AddItem(
-                    screen = screen,
-                    currentDestination = currentDestination,
-                    navController = navController
+                NavigationBarItem(selected = currentDestination?.hierarchy?.any{
+                    it.route == screen.route
+                } == true,
+                    onClick = { navController.navigate(screen.route){
+                        popUpToRoute
+                    } },
+                    icon = {
+                        Icon(painterResource(id = screen.icon), contentDescription = screen.route)
+                    },
+                    label = {
+                        Text(text = screen.route)
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = if (isSystemInDarkTheme()) secondaryContainerDark  else secondaryContainerLight,
+                        selectedTextColor = if (isSystemInDarkTheme()) secondaryContainerDark  else secondaryContainerLight,
+                        indicatorColor = if (isSystemInDarkTheme()) secondaryContainerDark  else secondaryContainerLight,
+                        unselectedIconColor = Color.Black,
+                        unselectedTextColor = Color.Black,
+                    )
                 )
             }
         }
     }
 }
 
-@Composable
-fun RowScope.AddItem(
-    screen: BottomBarScreen,
-    currentDestination: NavDestination?,
-    navController: NavHostController
-) {
-    NavigationBarItem(selected = currentDestination?.hierarchy?.any{
-                                                                   it.route == screen.route
-    } == true,
-        onClick = { navController.navigate(screen.route){
-            popUpToRoute
-        } },
-        icon = { 
-               Icon(painterResource(id = screen.icon), contentDescription = screen.route)
-        },
-        label = {
-            Text(text = screen.route)
-        },
-        colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = if (isSystemInDarkTheme()) secondaryContainerDark  else secondaryContainerLight,
-            selectedTextColor = if (isSystemInDarkTheme()) secondaryContainerDark  else secondaryContainerLight,
-            indicatorColor = if (isSystemInDarkTheme()) secondaryContainerDark  else secondaryContainerLight,
-            unselectedIconColor = Color.Black,
-            unselectedTextColor = Color.Black,
-        )
-    )
-}
