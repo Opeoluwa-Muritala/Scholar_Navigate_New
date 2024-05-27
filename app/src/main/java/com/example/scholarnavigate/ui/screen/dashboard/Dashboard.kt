@@ -3,13 +3,13 @@ package com.example.scholarnavigate.ui.screen.dashboard
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -36,9 +36,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.scholarnavigate.R
 import com.example.scholarnavigate.data.module.Course
+import com.example.scholarnavigate.data.module.Session
 import com.example.scholarnavigate.data.module.Task
 import com.example.scholarnavigate.ui.components.CountCard
 import com.example.scholarnavigate.ui.screen.dashboard.components.SubjectCard
+import com.example.scholarnavigate.ui.screen.dashboard.components.studySessionsList
 import com.example.scholarnavigate.ui.screen.dashboard.components.todoTasksList
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import com.example.scholarnavigate.ui.theme.onPrimaryDark
@@ -123,6 +125,39 @@ fun DashboardScreen() {
     )
 
 
+    val sessions = listOf(
+        Session(
+            sessionSubjectId = 0,
+            relatedToSubect = "CHE",
+            date = 0L,
+            duration = 2L,
+            sessionId = 0
+        ),
+        Session(
+            sessionSubjectId = 0,
+            relatedToSubect = "MAT",
+            date = 0L,
+            duration = 2L,
+            sessionId = 0
+        ),
+        Session(
+            sessionSubjectId = 0,
+            relatedToSubect = "PHY",
+            date = 0L,
+            duration = 2L,
+            sessionId = 0
+        ),
+        Session(
+            sessionSubjectId = 0,
+            relatedToSubect = "CSC",
+            date = 0L,
+            duration = 2L,
+            sessionId = 0
+        )
+    )
+
+
+
     ScholarNavigateTheme {
         Scaffold (
             topBar = {
@@ -155,8 +190,8 @@ fun DashboardScreen() {
                     Button(
                         onClick = { /*TODO*/ },
                         modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 40.dp, vertical = 20.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 40.dp, vertical = 20.dp)
                     ) {
                         Text(text = "Start Study Session")
                     }
@@ -166,6 +201,14 @@ fun DashboardScreen() {
                     tasks = emptyList(),
                     onTaskCardCLick = {},
                     onCheckBoxClick = {}
+                )
+                item { 
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+                studySessionsList(
+                    sectionTitle = "RECENT STUDY SESION",
+                    sessions = sessions,
+                    onDeleteClick = {}
                 )
             }
 
