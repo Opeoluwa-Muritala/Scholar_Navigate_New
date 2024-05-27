@@ -2,6 +2,7 @@ package com.example.scholarnavigate.ui.screen.dashboard
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -9,6 +10,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
@@ -17,6 +19,9 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.scholarnavigate.navigate.navmodule.BottomBarScreen
+import com.example.scholarnavigate.ui.theme.onPrimaryDark
+import com.example.scholarnavigate.ui.theme.onPrimaryLight
+import com.example.scholarnavigate.ui.theme.onSecondaryContainerLight
 import com.example.scholarnavigate.ui.theme.secondaryContainerDark
 import com.example.scholarnavigate.ui.theme.secondaryContainerLight
 
@@ -31,10 +36,14 @@ fun BottomNavGraph(navController: NavHostController) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val color = if (isSystemInDarkTheme()) onPrimaryLight  else onPrimaryDark
 
     val bottomBarDestination = screens.any{ it.route == currentDestination?.route}
     if (bottomBarDestination){
-        NavigationBar {
+        NavigationBar(
+            containerColor = onSecondaryContainerLight,
+            modifier = Modifier.fillMaxSize()
+        ) {
             screens.forEach{screen ->
                 NavigationBarItem(selected = currentDestination?.hierarchy?.any{
                     it.route == screen.route
@@ -49,9 +58,9 @@ fun BottomNavGraph(navController: NavHostController) {
                         Text(text = screen.route)
                     },
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = if (isSystemInDarkTheme()) secondaryContainerDark  else secondaryContainerLight,
-                        selectedTextColor = if (isSystemInDarkTheme()) secondaryContainerDark  else secondaryContainerLight,
-                        indicatorColor = if (isSystemInDarkTheme()) secondaryContainerDark  else secondaryContainerLight,
+                        selectedIconColor = color,
+                        selectedTextColor = color,
+                        indicatorColor = color,
                         unselectedIconColor = Color.Black,
                         unselectedTextColor = Color.Black,
                     )

@@ -1,23 +1,46 @@
 package com.example.scholarnavigate.ui.screen.dashboard
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.scholarnavigate.R
+import com.example.scholarnavigate.data.module.Course
+import com.example.scholarnavigate.data.module.Task
 import com.example.scholarnavigate.ui.components.CountCard
+import com.example.scholarnavigate.ui.screen.dashboard.components.SubjectCard
+import com.example.scholarnavigate.ui.screen.dashboard.components.todoTasksList
+import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import com.example.scholarnavigate.ui.theme.onPrimaryDark
 import com.example.scholarnavigate.ui.theme.onPrimaryLight
 import com.example.scholarnavigate.ui.theme.primaryDark
@@ -25,30 +48,130 @@ import com.example.scholarnavigate.ui.theme.primaryLight
 
 @Composable
 fun DashboardScreen() {
-    Scaffold (
-        topBar = {
-            DashboardTopAppBar()
-        },
-        containerColor = if (isSystemInDarkTheme()) primaryDark else primaryLight
-    ){ paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ){
-            item {
-                CountCardSection(
-                    modifier = Modifier
+
+    val courses = listOf(
+        Course("MAT 412", 2f, Course.subjectCardColors[0], 0),
+        Course("CHM 404", 10f, Course.subjectCardColors[1], 0),
+        Course("PHY 402", 6f, Course.subjectCardColors[2], 0),
+        Course("STA 410", 8f, Course.subjectCardColors[3], 0),
+        Course("GNS 424", 2f, Course.subjectCardColors[4], 0),
+    )
+
+    val tasks = listOf(
+        Task(
+            "Prepare Notes",
+            "",
+            0L,
+            1,
+            relatedCourses = "",
+            isComplete = false,
+            taskId = 0,
+            taskSubjectId = 0
+        ),
+        Task(
+            "Go to Lecture",
+            "",
+            0L,
+            2,
+            relatedCourses = "",
+            isComplete = true,
+            taskId = 0,
+            taskSubjectId = 0
+        ),
+        Task(
+            "Read The Lecturer Material On Mat",
+            "",
+            10L,
+            0,
+            relatedCourses = "",
+            isComplete = false,
+            taskId = 0,
+            taskSubjectId = 0
+        ),
+        Task(
+            "Go For Tutorials",
+            "",
+            10L,
+            2,
+            relatedCourses = "",
+            isComplete = true,
+            taskId = 0,
+            taskSubjectId = 0
+        ),
+        Task(
+            "Submit Assignments",
+            "",
+            10L,
+            1,
+            relatedCourses = "",
+            isComplete = false,
+            taskId = 0,
+            taskSubjectId = 0
+        ),
+        Task(
+            "Lorem Ipsum LaLam hardy jhg  retread g druthers k g utf ggmap dtd,h,gkg after ej " +
+                    "mg,sited proj gkf",
+            "",
+            10L,
+            1,
+            relatedCourses = "",
+            isComplete = false,
+            taskId = 0,
+            taskSubjectId = 0
+        )
+
+    )
+
+
+    ScholarNavigateTheme {
+        Scaffold (
+            topBar = {
+                DashboardTopAppBar()
+            },
+            containerColor = if (isSystemInDarkTheme()) primaryLight else primaryDark
+        ){ paddingValues ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ){
+                item {
+                    CountCardSection(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        subjectCount = 5,
+                        studiedHours = "15",
+                        goalHours = "17"
+                    )
+                }
+                item {
+                    SubjectCardSection(
+                        modifier = Modifier.fillMaxWidth(),
+                        courseList = emptyList()
+                    )
+                }
+                item {
+                    Button(
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier
                         .fillMaxWidth()
-                        .padding(12.dp),
-                    subjectCount = 5,
-                    studiedHours = "15",
-                    goalHours = "17"
+                        .padding(horizontal = 40.dp, vertical = 20.dp)
+                    ) {
+                        Text(text = "Start Study Session")
+                    }
+                }
+                todoTasksList(
+                    sectionTitle = "UPCOMING TASKS",
+                    tasks = emptyList(),
+                    onTaskCardCLick = {},
+                    onCheckBoxClick = {}
                 )
             }
-        }
 
+        }
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,7 +201,7 @@ private fun CountCardSection(
     Row(modifier = modifier) {
         CountCard(
             modifier = Modifier.weight(1f),
-            headingText = "Subject Count",
+            headingText = "Course Count",
             count = "$subjectCount"
         )
         Spacer(modifier = Modifier.width(10.dp))
@@ -93,5 +216,62 @@ private fun CountCardSection(
             headingText = "Goal Study Hours",
             count = goalHours
         )
+    }
+}
+
+@Composable
+private fun SubjectCardSection(
+    modifier: Modifier = Modifier,
+    courseList: List<Course>,
+    emptyLazyList: String = "You don't have any courses. \n Click the + button to add new course"
+) {
+    Column(modifier) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "COURSES",
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = 12.dp)
+            )
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Courses"
+                )
+            }
+        }
+        if (courseList.isEmpty()){
+            Image(
+                modifier = Modifier
+                    .size(120.dp)
+                    .align(Alignment.CenterHorizontally),
+                painter = painterResource(id = R.drawable.books),
+                contentDescription = emptyLazyList
+            )
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = emptyLazyList,
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Gray,
+                textAlign = TextAlign.Center
+            )
+        }
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(start = 12.dp, end = 12.dp)
+        ){
+            items(courseList){ Course ->
+                SubjectCard(
+                    courseName = Course.name,
+                    gradientColors = Course.colors,
+                    onClick = {
+
+                    }
+                )
+            }
+        }
     }
 }
