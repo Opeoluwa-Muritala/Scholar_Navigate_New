@@ -28,6 +28,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,6 +43,7 @@ import com.example.scholarnavigate.data.module.Course
 import com.example.scholarnavigate.data.module.Session
 import com.example.scholarnavigate.data.module.Task
 import com.example.scholarnavigate.ui.components.CountCard
+import com.example.scholarnavigate.ui.screen.dashboard.components.AddCourseDialog
 import com.example.scholarnavigate.ui.screen.dashboard.components.SubjectCard
 import com.example.scholarnavigate.ui.screen.dashboard.components.studySessionsList
 import com.example.scholarnavigate.ui.screen.dashboard.components.todoTasksList
@@ -124,7 +129,6 @@ fun DashboardScreen() {
 
     )
 
-
     val sessions = listOf(
         Session(
             sessionSubjectId = 0,
@@ -156,6 +160,12 @@ fun DashboardScreen() {
         )
     )
 
+    var isAddSubjectDialogOpen by remember { mutableStateOf(false) }
+    AddCourseDialog(
+        onDissmisRequest = { isAddSubjectDialogOpen = false },
+        onConfirmButtonClick = { isAddSubjectDialogOpen = false },
+        isOpen = isAddSubjectDialogOpen
+    )
 
 
     ScholarNavigateTheme {
@@ -183,7 +193,10 @@ fun DashboardScreen() {
                 item {
                     SubjectCardSection(
                         modifier = Modifier.fillMaxWidth(),
-                        courseList = emptyList()
+                        courseList = emptyList(),
+                        onAddCourseClick = {
+                            isAddSubjectDialogOpen = true
+                        }
                     )
                 }
                 item {
@@ -266,7 +279,8 @@ private fun CountCardSection(
 private fun SubjectCardSection(
     modifier: Modifier = Modifier,
     courseList: List<Course>,
-    emptyLazyList: String = "You don't have any courses. \n Click the + button to add new course"
+    emptyLazyList: String = "You don't have any courses. \n Click the + button to add new course",
+    onAddCourseClick: () -> Unit
 ) {
     Column(modifier) {
         Row(
@@ -279,7 +293,7 @@ private fun SubjectCardSection(
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(start = 12.dp)
             )
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = onAddCourseClick) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add Courses"
