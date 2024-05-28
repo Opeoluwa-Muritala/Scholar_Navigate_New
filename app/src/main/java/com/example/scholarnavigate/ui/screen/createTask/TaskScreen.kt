@@ -1,6 +1,10 @@
 package com.example.scholarnavigate.ui.screen.createTask
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,10 +12,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +38,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.scholarnavigate.data.util.Priority
+import com.example.scholarnavigate.ui.screen.dashboard.components.DeleteCourseDialog
 import com.example.scholarnavigate.ui.screen.dashboard.components.TaskCheckBox
 import com.example.scholarnavigate.ui.theme.Red
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
@@ -47,12 +58,22 @@ fun TaskScreen() {
     taskTitleError = when {
         title.isBlank() -> "Please enter the task title"
         title.length < 4 -> "Task title is too short"
-        title.length < 20 -> "Task title is too long"
+        title.length > 20 -> "Task title is too long"
         else -> null
     }
-
+    var isDeleteTask by remember {
+        mutableStateOf(false)
+    }
 
     ScholarNavigateTheme {
+        DeleteCourseDialog(
+            title = "Delete Task",
+            onDissmisRequest = { isDeleteTask = false },
+            body = "Are you sure you want to delete this Task" +
+                    ". This action can not be undone.",
+            onConfirmButtonClick = { isDeleteTask = false },
+            isOpen = isDeleteTask
+        )
         Scaffold(
             topBar = {
                 TaskScreenTopAppBar(
@@ -60,7 +81,7 @@ fun TaskScreen() {
                     isTaskComplete = false,
                     checkBoxBorderColor = Red,
                     onBackButtonClick = { /*TODO*/ },
-                    onDeleteButtonClick = { /*TODO*/ },
+                    onDeleteButtonClick = { isDeleteTask = true },
                     onCheckBoxClick = {}
                     )
             }
@@ -70,6 +91,7 @@ fun TaskScreen() {
                     .fillMaxSize()
                     .padding(paddingValues)
                     .padding(horizontal = 12.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -77,7 +99,7 @@ fun TaskScreen() {
                     onValueChange = { title = it},
                     label = { Text(text = "Title")},
                     singleLine = true,
-                    isError = taskTitleError == null,
+                    isError = taskTitleError != null,
                     supportingText = {
                         Text(text = taskTitleError.orEmpty())
                     }
@@ -96,16 +118,74 @@ fun TaskScreen() {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "CHM 121", style = MaterialTheme.typography.bodyLarge)
+                    Text(text = "30 May, 2024", style = MaterialTheme.typography.bodyLarge)
                     IconButton(onClick = { /*TODO*/ }) {
                         Icon(imageVector = Icons.Default.DateRange, contentDescription = "Select Due Date")
                     }
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(text = "Priority", style = MaterialTheme.typography.bodyLarge)
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(Modifier.fillMaxWidth()) {
+                    Priority.entries.forEach{priority ->
+                        PriorityButton(
+                            modifier = Modifier.weight(1f),
+                            label = priority.title,
+                            backgroundColor = priority.color,
+                            borderColor = if (priority == Priority.MEDIUM) Color.White else Color.Transparent,
+                            labelColor = if (priority == Priority.MEDIUM) Color.White else Color.White.copy(0.75f),
+                            onClick = {}
+                            )
+                    }
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(text = "Related Subject", style = MaterialTheme.typography.bodySmall)
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "CHM 121", style = MaterialTheme.typography.bodyLarge)
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Select Subject")
+                    }
+                }
+                Button(
+                    enabled = taskTitleError == null,
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 20.dp)
+                ) {
+                    Text(text = "Save")
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PriorityButton(
+    modifier: Modifier =Modifier,
+    label:String,
+    backgroundColor: Color,
+    borderColor: Color,
+    labelColor: Color,
+    onClick: () -> Unit
+){
+    Box(modifier = modifier
+        .background(backgroundColor)
+        .padding(5.dp)
+        .border(2.dp, borderColor, RoundedCornerShape(5.dp))
+        .padding(5.dp)
+        .clickable { onClick() },
+        contentAlignment = Alignment.Center
+    )
+    {
+        Text(text = label, color = labelColor)
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -120,7 +200,7 @@ private fun TaskScreenTopAppBar(
     TopAppBar(
         title = { Text(text = "Create Task") },
         navigationIcon = {
-                         IconButton(onClick = { /*TODO*/ }) {
+                         IconButton(onClick = onBackButtonClick) {
                              Icon(
                                  imageVector = Icons.Default.ArrowBack,
                                  contentDescription = "Navigate Back"
@@ -132,12 +212,13 @@ private fun TaskScreenTopAppBar(
                 TaskCheckBox(
                     isComplete = isTaskComplete,
                     borderColor = checkBoxBorderColor,
-                    onCheckBoxClick = {}
+                    onCheckBoxClick = onCheckBoxClick
                 )
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = onDeleteButtonClick) {
                     Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
                 }
             }
         }
     )
+
 }
