@@ -90,15 +90,12 @@ private fun StudySessionCard(
     onDeleteClick: () -> Unit
 
 ) {
-    val textColors = if (isSystemInDarkTheme()) onPrimaryDark else onPrimaryLight
-
     Card(
         modifier
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(if (isSystemInDarkTheme()) primaryContainerLight else primaryContainerDark)
             ,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -112,26 +109,22 @@ private fun StudySessionCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.titleMedium,
-                    color = textColors
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "${session.date}",
                     style = MaterialTheme.typography.bodySmall,
-                    color = textColors
                 )
                 }
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = "${session.duration} hr",
                 style = MaterialTheme.typography.titleMedium,
-                color = textColors
             )
             IconButton(onClick = onDeleteClick) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Delete Session",
-                    tint = textColors
                 )
             }
         }

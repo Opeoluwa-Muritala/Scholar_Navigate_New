@@ -30,12 +30,9 @@ fun CountCard(
     headingText: String,
     count: String
 ) {
-    val textColors = if (isSystemInDarkTheme()) onPrimaryDark else onPrimaryLight
     ElevatedCard(
         modifier = modifier,
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = if (isSystemInDarkTheme()) primaryContainerLight else primaryContainerDark
-        )
+
     ) {
         Column(
             Modifier
@@ -49,14 +46,12 @@ fun CountCard(
         ) {
             Text(
                 text = headingText,
-                style = MaterialTheme.typography.labelSmall,
-                color = textColors
+                style = MaterialTheme.typography.labelSmall
             )
             Spacer(modifier = Modifier.height(5.dp))
             Text(
                 text = count,
                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 30.sp),
-                color = textColors
             )
 
         }

@@ -26,7 +26,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,147 +38,73 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.scholarnavigate.R
+import com.example.scholarnavigate.courses
 import com.example.scholarnavigate.data.module.Course
-import com.example.scholarnavigate.data.module.Session
-import com.example.scholarnavigate.data.module.Task
+import com.example.scholarnavigate.sessions
+import com.example.scholarnavigate.tasks
 import com.example.scholarnavigate.ui.components.CountCard
 import com.example.scholarnavigate.ui.screen.dashboard.components.AddCourseDialog
+import com.example.scholarnavigate.ui.screen.dashboard.components.DeleteCourseDialog
 import com.example.scholarnavigate.ui.screen.dashboard.components.SubjectCard
 import com.example.scholarnavigate.ui.screen.dashboard.components.studySessionsList
 import com.example.scholarnavigate.ui.screen.dashboard.components.todoTasksList
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
-import com.example.scholarnavigate.ui.theme.onPrimaryDark
-import com.example.scholarnavigate.ui.theme.onPrimaryLight
-import com.example.scholarnavigate.ui.theme.primaryDark
-import com.example.scholarnavigate.ui.theme.primaryLight
 
 @Composable
 fun DashboardScreen() {
 
-    val courses = listOf(
-        Course("MAT 412", 2f, Course.subjectCardColors[0], 0),
-        Course("CHM 404", 10f, Course.subjectCardColors[1], 0),
-        Course("PHY 402", 6f, Course.subjectCardColors[2], 0),
-        Course("STA 410", 8f, Course.subjectCardColors[3], 0),
-        Course("GNS 424", 2f, Course.subjectCardColors[4], 0),
-    )
 
-    val tasks = listOf(
-        Task(
-            "Prepare Notes",
-            "",
-            0L,
-            1,
-            relatedCourses = "",
-            isComplete = false,
-            taskId = 0,
-            taskSubjectId = 0
-        ),
-        Task(
-            "Go to Lecture",
-            "",
-            0L,
-            2,
-            relatedCourses = "",
-            isComplete = true,
-            taskId = 0,
-            taskSubjectId = 0
-        ),
-        Task(
-            "Read The Lecturer Material On Mat",
-            "",
-            10L,
-            0,
-            relatedCourses = "",
-            isComplete = false,
-            taskId = 0,
-            taskSubjectId = 0
-        ),
-        Task(
-            "Go For Tutorials",
-            "",
-            10L,
-            2,
-            relatedCourses = "",
-            isComplete = true,
-            taskId = 0,
-            taskSubjectId = 0
-        ),
-        Task(
-            "Submit Assignments",
-            "",
-            10L,
-            1,
-            relatedCourses = "",
-            isComplete = false,
-            taskId = 0,
-            taskSubjectId = 0
-        ),
-        Task(
-            "Lorem Ipsum LaLam hardy jhg  retread g druthers k g utf ggmap dtd,h,gkg after ej " +
-                    "mg,sited proj gkf",
-            "",
-            10L,
-            1,
-            relatedCourses = "",
-            isComplete = false,
-            taskId = 0,
-            taskSubjectId = 0
+    var studyHours by remember {
+        mutableStateOf("")
+    }
+    var courseName by remember {
+        mutableStateOf("")
+    }
+    var selectedCardColor by remember {
+        mutableStateOf(Course.subjectCardColors.random())
+    }
+
+
+
+
+
+    ScholarNavigateTheme(isSystemInDarkTheme()) {
+        var isAddSubjectDialogOpen by remember { mutableStateOf(false) }
+        AddCourseDialog(
+            onDissmisRequest = { isAddSubjectDialogOpen = false },
+            courseName = courseName,
+            studyHours = studyHours,
+            oncourseNameChange ={courseName = it},
+            onStudyHoursChange = {studyHours = it},
+            onConfirmButtonClick = { isAddSubjectDialogOpen = false },
+            isOpen = isAddSubjectDialogOpen,
+            selectedColors = selectedCardColor,
+            onColorChange = {
+                selectedCardColor = it
+            }
         )
 
-    )
 
-    val sessions = listOf(
-        Session(
-            sessionSubjectId = 0,
-            relatedToSubect = "CHE",
-            date = 0L,
-            duration = 2L,
-            sessionId = 0
-        ),
-        Session(
-            sessionSubjectId = 0,
-            relatedToSubect = "MAT",
-            date = 0L,
-            duration = 2L,
-            sessionId = 0
-        ),
-        Session(
-            sessionSubjectId = 0,
-            relatedToSubect = "PHY",
-            date = 0L,
-            duration = 2L,
-            sessionId = 0
-        ),
-        Session(
-            sessionSubjectId = 0,
-            relatedToSubect = "CSC",
-            date = 0L,
-            duration = 2L,
-            sessionId = 0
+        var isDeleteDialogOpen by remember {
+            mutableStateOf(false)
+        }
+        DeleteCourseDialog(
+            onDissmisRequest = { isDeleteDialogOpen = false },
+            body = "Are you sure you want to delete this session? Your study hours will be reduced " +
+                    "by this time. This action cannot be undone",
+            onConfirmButtonClick = { isDeleteDialogOpen = false },
+            isOpen = isDeleteDialogOpen
         )
-    )
-
-    var isAddSubjectDialogOpen by remember { mutableStateOf(false) }
-    AddCourseDialog(
-        onDissmisRequest = { isAddSubjectDialogOpen = false },
-        onConfirmButtonClick = { isAddSubjectDialogOpen = false },
-        isOpen = isAddSubjectDialogOpen
-    )
-
-
-    ScholarNavigateTheme {
-        Scaffold (
+        Scaffold(
             topBar = {
                 DashboardTopAppBar()
             },
-            containerColor = if (isSystemInDarkTheme()) primaryLight else primaryDark
-        ){ paddingValues ->
+        ) { paddingValues ->
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-            ){
+            ) {
                 item {
                     CountCardSection(
                         modifier = Modifier
@@ -193,7 +118,7 @@ fun DashboardScreen() {
                 item {
                     SubjectCardSection(
                         modifier = Modifier.fillMaxWidth(),
-                        courseList = emptyList(),
+                        courseList = courses,
                         onAddCourseClick = {
                             isAddSubjectDialogOpen = true
                         }
@@ -211,23 +136,22 @@ fun DashboardScreen() {
                 }
                 todoTasksList(
                     sectionTitle = "UPCOMING TASKS",
-                    tasks = emptyList(),
+                    tasks = tasks,
                     onTaskCardCLick = {},
                     onCheckBoxClick = {}
                 )
-                item { 
+                item {
                     Spacer(modifier = Modifier.height(20.dp))
                 }
                 studySessionsList(
                     sectionTitle = "RECENT STUDY SESION",
                     sessions = sessions,
-                    onDeleteClick = {}
+                    onDeleteClick = {isDeleteDialogOpen = true}
                 )
             }
 
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -238,12 +162,8 @@ private fun DashboardTopAppBar() {
             Text(
                 "Scholar Navigate",
                 style = MaterialTheme.typography.headlineMedium,
-                color =if (isSystemInDarkTheme()) onPrimaryLight else onPrimaryDark
             )
         },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = if (isSystemInDarkTheme()) primaryLight else primaryDark
-        )
     )
 }
 
@@ -300,7 +220,7 @@ private fun SubjectCardSection(
                 )
             }
         }
-        if (courseList.isEmpty()){
+        if (courseList.isEmpty()) {
             Image(
                 modifier = Modifier
                     .size(120.dp)
@@ -319,8 +239,8 @@ private fun SubjectCardSection(
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(start = 12.dp, end = 12.dp)
-        ){
-            items(courseList){ Course ->
+        ) {
+            items(courseList) { Course ->
                 SubjectCard(
                     courseName = Course.name,
                     gradientColors = Course.colors,

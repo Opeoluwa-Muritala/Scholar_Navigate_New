@@ -30,7 +30,7 @@ fun SubjectCard(
         .clickable {
             onClick()
         }.background(
-            brush = Brush.horizontalGradient(gradientColors),
+            brush = Brush.verticalGradient(gradientColors),
             shape = MaterialTheme.shapes.medium
         )
     ){
@@ -48,7 +48,6 @@ fun SubjectCard(
                 style = MaterialTheme.typography.headlineMedium,
                 color = Color.White
             )
-
         }
     }
 }

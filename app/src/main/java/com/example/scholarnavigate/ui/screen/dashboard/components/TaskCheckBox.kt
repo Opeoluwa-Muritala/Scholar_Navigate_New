@@ -38,7 +38,6 @@ fun TaskCheckBox(
                 modifier = Modifier.size(20.dp),
                 imageVector = Icons.Rounded.Check,
                 contentDescription = null,
-                tint = if (isSystemInDarkTheme()) onPrimaryDark else onPrimaryLight
             )
         }
     }

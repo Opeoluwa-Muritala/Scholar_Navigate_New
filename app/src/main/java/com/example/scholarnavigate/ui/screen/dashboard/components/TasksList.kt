@@ -89,7 +89,6 @@ private fun TaskCard(
     onCheckBoxClick: () -> Unit,
     onClick: () -> Unit
 ) {
-    val textColors = if (isSystemInDarkTheme()) onPrimaryDark else onPrimaryLight
 
     ElevatedCard(
         modifier.clickable { 
@@ -99,7 +98,6 @@ private fun TaskCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(if (isSystemInDarkTheme()) primaryContainerLight else primaryContainerDark)
                 .padding(8.dp)
             ,
             verticalAlignment = Alignment.CenterVertically
@@ -119,13 +117,11 @@ private fun TaskCard(
                     textDecoration = if (task.isComplete){
                         TextDecoration.LineThrough
                     } else TextDecoration.None,
-                    color = textColors
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "${task.dueDates}",
                     style = MaterialTheme.typography.bodySmall,
-                    color = textColors
                 )
             }
         }
