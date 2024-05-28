@@ -56,9 +56,7 @@ import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 @Composable
 fun CourseScreen() {
     val listState = rememberLazyListState()
-    val isFABExpanded by remember {
-        derivedStateOf { listState.firstVisibleItemIndex == 0 }
-    }
+    val isFABExpanded by remember { derivedStateOf{listState.firstVisibleItemIndex == 0}}
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     var studyHours by remember {
@@ -102,6 +100,7 @@ fun CourseScreen() {
             isOpen = isDeleteDialogOpen
         )
         DeleteCourseDialog(
+            title = "Delete Course",
             onDissmisRequest = { isDeleteCourseOpen = false },
             body = "Are you sure you want to delete this course? All related" +
                     "tasks and study sessions will be permanently removed. This action cannot be undone",
@@ -131,7 +130,8 @@ fun CourseScreen() {
             LazyColumn(
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
+                    .padding(paddingValues),
+                state = listState
             )
             {
                 item {
