@@ -66,6 +66,8 @@ fun TaskScreen() {
     }
 
     ScholarNavigateTheme {
+
+
         DeleteCourseDialog(
             title = "Delete Task",
             onDissmisRequest = { isDeleteTask = false },
@@ -74,6 +76,9 @@ fun TaskScreen() {
             onConfirmButtonClick = { isDeleteTask = false },
             isOpen = isDeleteTask
         )
+
+
+
         Scaffold(
             topBar = {
                 TaskScreenTopAppBar(
