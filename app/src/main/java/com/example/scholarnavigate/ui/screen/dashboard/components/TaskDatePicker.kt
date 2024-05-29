@@ -1,5 +1,15 @@
 package com.example.scholarnavigate.ui.screen.dashboard.components
 
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskDatePicker(
     state: DatePickerState,
