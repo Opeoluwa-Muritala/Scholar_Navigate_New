@@ -29,10 +29,12 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,9 +43,11 @@ import androidx.compose.ui.unit.dp
 import com.example.scholarnavigate.data.util.Priority
 import com.example.scholarnavigate.ui.screen.dashboard.components.DeleteCourseDialog
 import com.example.scholarnavigate.ui.screen.dashboard.components.TaskCheckBox
+import com.example.scholarnavigate.ui.screen.dashboard.components.TaskDatePicker
 import com.example.scholarnavigate.ui.theme.Red
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskScreen() {
     var title by remember {
@@ -52,7 +56,7 @@ fun TaskScreen() {
     var description by remember {
         mutableStateOf("")
     }
-    var taskTitleError by remember {
+    var taskTitleError by rememberSaveable {
         mutableStateOf<String?>(null)
     }
     taskTitleError = when {
@@ -64,6 +68,10 @@ fun TaskScreen() {
     var isDeleteTask by remember {
         mutableStateOf(false)
     }
+    var isDatePickerDialogOpen by rememberSaveable {
+        mutableStateOf(false)
+    }
+    val datePickerState = rememberDatePickerState()
 
     ScholarNavigateTheme {
 
@@ -78,9 +86,12 @@ fun TaskScreen() {
         )
 
 
-//        TaskDatePicker(
-//
-//        )
+        TaskDatePicker(
+            state = datePickerState,
+            isOpen = isDatePickerDialogOpen,
+            onDismissRequest = { isDatePickerDialogOpen = false },
+            onConfirmButtonClick = { isDatePickerDialogOpen = false}
+        )
 
         Scaffold(
             topBar = {
@@ -127,7 +138,7 @@ fun TaskScreen() {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(text = "30 May, 2024", style = MaterialTheme.typography.bodyLarge)
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = { isDatePickerDialogOpen = true }) {
                         Icon(imageVector = Icons.Default.DateRange, contentDescription = "Select Due Date")
                     }
                 }
