@@ -9,12 +9,24 @@ fun TaskDatePicker(
     onDismissRequest: () -> Unit,
     onConfirmButtonClick: () -> Unit
 ){
-    ScholarNavigateTheme{
-        DatePickerDialog(
+    ScholarNavigateTheme {
+        if (isOpen) {
+            DatePickerDialog(
+                onDismissRequest = onDismissRequest,
+                confirmButton = {
+                    TextButton(onConfirmButtonClick) {
+                        Text(text = confirmButtonText)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onConfirmButtonClick) {
+                        Text(text = dismissButtonText)
+                    }
 
-        ){
-
+                }
+            ) {
+                DatePicker(state = state)
+            }
         }
     }
-
 }
