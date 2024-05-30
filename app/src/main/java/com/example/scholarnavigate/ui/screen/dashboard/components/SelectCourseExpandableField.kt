@@ -43,6 +43,7 @@ fun SelectCourseField(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val color = Color.Transparent
+        Text(text = "Select Related Course", style = MaterialTheme.typography.bodySmall)
         ExposedDropdownMenuBox(
             expanded = isOpen,
             onExpandedChange =  onExpandedChange ,
@@ -63,9 +64,6 @@ fun SelectCourseField(
                 ),
                 placeholder = {
                     Text(text = placeholderText)
-                },
-                label = {
-                    Text(text = "Select Related Course", style = MaterialTheme.typography.bodySmall)
                 },
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = isOpen)
