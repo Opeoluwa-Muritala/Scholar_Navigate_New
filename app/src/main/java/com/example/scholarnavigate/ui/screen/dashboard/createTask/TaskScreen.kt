@@ -54,9 +54,14 @@ import com.example.scholarnavigate.ui.theme.Red
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import java.time.Instant
 
+@Composable
+fun TaskScreenNavigation(){
+    TaskScreen()
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskScreen() {
+private fun TaskScreen() {
     var title by remember {
         mutableStateOf("")
     }

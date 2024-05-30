@@ -51,6 +51,10 @@ import com.example.scholarnavigate.ui.screen.dashboard.components.todoTasksList
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 
 @Composable
+fun DashboardScreenNavigation(){
+    DashboardScreen()
+}
+@Composable
 fun DashboardScreen() {
 
 
@@ -144,7 +148,7 @@ fun DashboardScreen() {
                     Spacer(modifier = Modifier.height(20.dp))
                 }
                 studySessionsList(
-                    sectionTitle = "RECENT STUDY SESION",
+                    sectionTitle = "RECENT STUDY SESSION",
                     sessions = sessions,
                     onDeleteClick = {isDeleteDialogOpen = true}
                 )

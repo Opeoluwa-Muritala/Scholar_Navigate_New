@@ -52,9 +52,14 @@ import com.example.scholarnavigate.ui.screen.dashboard.components.studySessionsL
 import com.example.scholarnavigate.ui.screen.dashboard.components.todoTasksList
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 
+
+@Composable
+fun CourseScreenNavigation(){
+    CourseScreen()
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CourseScreen() {
+private fun CourseScreen() {
     val listState = rememberLazyListState()
     val isFABExpanded by remember { derivedStateOf{listState.firstVisibleItemIndex == 0}}
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()

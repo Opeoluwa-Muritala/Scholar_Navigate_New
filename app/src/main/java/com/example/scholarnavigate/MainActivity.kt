@@ -4,26 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.scholarnavigate.data.module.Course
 import com.example.scholarnavigate.data.module.Session
 import com.example.scholarnavigate.data.module.Task
 import com.example.scholarnavigate.navigate.RootNavigationGraph
-import com.example.scholarnavigate.ui.screen.dashboard.courseinfo.CourseScreen
-import com.example.scholarnavigate.ui.screen.dashboard.createTask.TaskScreen
-import com.example.scholarnavigate.ui.screen.dashboard.session.SeessionScreen
-import com.example.scholarnavigate.ui.screen.splash.AnimatedSplashScreen
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 
 class MainActivity : ComponentActivity() {
@@ -31,8 +16,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ScholarNavigateTheme(darkTheme = isSystemInDarkTheme()) {
-//                RootNavigationGraph(navController = rememberNavController())
-                SeessionScreen()
+                RootNavigationGraph(navController = rememberNavController())
             }
         }
     }

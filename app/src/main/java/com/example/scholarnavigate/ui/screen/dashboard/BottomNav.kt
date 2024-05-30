@@ -36,7 +36,6 @@ fun BottomNavGraph(navController: NavHostController) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    val color = if (isSystemInDarkTheme()) onPrimaryLight  else onPrimaryDark
 
     val bottomBarDestination = screens.any{ it.route == currentDestination?.route}
     if (bottomBarDestination){
@@ -60,7 +59,7 @@ fun BottomNavGraph(navController: NavHostController) {
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = color,
                         selectedTextColor = color,
-                        indicatorColor = color,
+                        indicatorColor = COlor.Unspecified,
                         unselectedIconColor = Color.Black,
                         unselectedTextColor = Color.Black,
                     )

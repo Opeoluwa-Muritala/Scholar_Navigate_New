@@ -1,20 +1,32 @@
 package com.example.scholarnavigate.ui.screen.dashboard
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.scholarnavigate.navigate.HomeNavGraph
+import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(navController: NavHostController = rememberNavController()) {
-    Scaffold(
-        bottomBar = {
-            BottomNavGraph(navController = navController)
+    ScholarNavigateTheme {
+        Scaffold(
+            bottomBar = {
+                BottomNavGraph(navController = navController)
+            }
+        ) { paddingValues ->
+            Column(
+                Modifier.padding(paddingValues).fillMaxSize()
+            ){
+                HomeNavGraph()
+            }
+
         }
-    ) {
-        HomeNavGraph()
     }
+
 }

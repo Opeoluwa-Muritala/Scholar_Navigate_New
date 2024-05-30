@@ -38,9 +38,9 @@ fun SelectCourseField(
     onDismissRequest: () -> Unit
 ) {
     Column(
-        modifier.fillMaxSize(1f).height(IntrinsicSize.Max),
+        modifier,
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.Start
     ) {
         val color = Color.Transparent
         Text(text = "Select Related Course", style = MaterialTheme.typography.bodySmall)

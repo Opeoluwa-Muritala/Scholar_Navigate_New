@@ -5,3 +5,8 @@ sealed class AuthScreen(val route: String){
     object Splash: AuthScreen("splash")
 }
 
+sealed class DashboardScreens(val route:String){
+    object SessionScreen: DashboardScreens("session")
+    object TaskScreen: DashboardScreens("task")
+    object CourseScreen: DashboardScreens("course")
+}
