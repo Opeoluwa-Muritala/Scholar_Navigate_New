@@ -1,4 +1,4 @@
-package com.example.scholarnavigate.ui.screen.createTask
+package com.example.scholarnavigate.ui.screen.dashboard.createTask
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -6,12 +6,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -40,12 +42,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.scholarnavigate.courses
+import com.example.scholarnavigate.data.module.Course
 import com.example.scholarnavigate.data.util.Priority
+import com.example.scholarnavigate.data.util.changeMillisToDateString
 import com.example.scholarnavigate.ui.screen.dashboard.components.DeleteCourseDialog
+import com.example.scholarnavigate.ui.screen.dashboard.components.SelectCourseField
 import com.example.scholarnavigate.ui.screen.dashboard.components.TaskCheckBox
 import com.example.scholarnavigate.ui.screen.dashboard.components.TaskDatePicker
 import com.example.scholarnavigate.ui.theme.Red
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
+import java.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,7 +78,17 @@ fun TaskScreen() {
     var isDatePickerDialogOpen by rememberSaveable {
         mutableStateOf(false)
     }
-    val datePickerState = rememberDatePickerState()
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = Instant.now().toEpochMilli()
+    )
+    var isCourseFieldOpen by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var courseFieldText by rememberSaveable {
+        mutableStateOf<Course?>(null)
+    }
+
+
 
     ScholarNavigateTheme {
 
@@ -137,7 +154,9 @@ fun TaskScreen() {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "30 May, 2024", style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        text = datePickerState.selectedDateMillis.changeMillisToDateString(),
+                        style = MaterialTheme.typography.bodyLarge)
                     IconButton(onClick = { isDatePickerDialogOpen = true }) {
                         Icon(imageVector = Icons.Default.DateRange, contentDescription = "Select Due Date")
                     }
@@ -158,17 +177,20 @@ fun TaskScreen() {
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
-                Text(text = "Related Subject", style = MaterialTheme.typography.bodySmall)
-                Row(
-                    Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "CHM 121", style = MaterialTheme.typography.bodyLarge)
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Select Subject")
-                    }
-                }
+
+                SelectCourseField(
+                    modifier = Modifier.height(IntrinsicSize.Max),
+                    isOpen = isCourseFieldOpen,
+                    courses = courses,
+                    onCourseClicked = { course ->
+                                      courseFieldText = course
+                        isCourseFieldOpen = false
+                    },
+                    onExpandedChange = {isCourseFieldOpen = !isCourseFieldOpen},
+                    value = courseFieldText?.name.orEmpty(),
+                    onDismissRequest = {isCourseFieldOpen = false}
+                )
+                Box(modifier = Modifier.size(30.dp))
                 Button(
                     enabled = taskTitleError == null,
                     onClick = { /*TODO*/ },

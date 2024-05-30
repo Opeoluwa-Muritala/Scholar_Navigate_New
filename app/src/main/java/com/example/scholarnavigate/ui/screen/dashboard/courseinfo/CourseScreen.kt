@@ -1,4 +1,4 @@
-package com.example.scholarnavigate.ui.screen.courseinfo
+package com.example.scholarnavigate.ui.screen.dashboard.courseinfo
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement

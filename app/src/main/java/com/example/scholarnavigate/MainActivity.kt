@@ -20,8 +20,9 @@ import com.example.scholarnavigate.data.module.Course
 import com.example.scholarnavigate.data.module.Session
 import com.example.scholarnavigate.data.module.Task
 import com.example.scholarnavigate.navigate.RootNavigationGraph
-import com.example.scholarnavigate.ui.screen.courseinfo.CourseScreen
-import com.example.scholarnavigate.ui.screen.createTask.TaskScreen
+import com.example.scholarnavigate.ui.screen.dashboard.courseinfo.CourseScreen
+import com.example.scholarnavigate.ui.screen.dashboard.createTask.TaskScreen
+import com.example.scholarnavigate.ui.screen.dashboard.session.SeessionScreen
 import com.example.scholarnavigate.ui.screen.splash.AnimatedSplashScreen
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ScholarNavigateTheme(darkTheme = isSystemInDarkTheme()) {
 //                RootNavigationGraph(navController = rememberNavController())
-                TaskScreen()
+                SeessionScreen()
             }
         }
     }
