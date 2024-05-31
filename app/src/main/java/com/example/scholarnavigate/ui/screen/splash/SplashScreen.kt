@@ -3,6 +3,7 @@ package com.example.scholarnavigate.ui.screen.splash
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateOffsetAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -21,9 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.scholarnavigate.R
 import com.example.scholarnavigate.navigate.navmodule.AuthScreen
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import com.example.scholarnavigate.ui.theme.primaryDark
@@ -55,17 +58,19 @@ fun AnimatedSplashScreen(navController: NavController) {
 
 @Composable
 fun Splash(alpha:Float) {
-    Box(
-        modifier = Modifier
-            .background(if (isSystemInDarkTheme()) primaryLight else primaryDark)
-            .fillMaxSize().alpha(alpha),
-        contentAlignment = Alignment.Center
-    ){
-        Icon(
-            modifier = Modifier.size(120.dp),
-            imageVector = Icons.Outlined.Search,
-            contentDescription = "",
-            tint = Color.White
-        )
+    ScholarNavigateTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .alpha(alpha),
+            contentAlignment = Alignment.Center
+        ){
+            Image(
+                modifier = Modifier.size(300.dp),
+                painter = painterResource(id = R.drawable.applogo),
+                contentDescription = "Scholar Navigate",
+            )
+        }
     }
+
 }

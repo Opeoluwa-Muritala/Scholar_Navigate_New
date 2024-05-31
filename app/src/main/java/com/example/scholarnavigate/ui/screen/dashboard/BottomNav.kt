@@ -2,18 +2,15 @@ package com.example.scholarnavigate.ui.screen.dashboard
 
 import android.util.Log
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
@@ -21,7 +18,6 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.scholarnavigate.navigate.navmodule.BottomBarScreen
-import com.example.scholarnavigate.ui.theme.onSecondaryContainerLight
 
 @Composable
 fun BottomNavGraph(navController: NavHostController) {
@@ -34,13 +30,15 @@ fun BottomNavGraph(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    val bottomBarDestination = screens.any{ it.route == currentDestination?.route}
-    Log.d("bottomBarDestination result", "$bottomBarDestination")
-    Log.d("bottomBarDestination result", "${currentDestination?.route}")
     if (true){
-        BottomAppBar {
+        NavigationBar {
             screens.forEach{screen ->
-                AddItems(currentDestination = currentDestination, screen = screen, navController = navController)
+                currentDestination?.route?.let {
+                    AddItems( screen = screen,
+                        navController = navController,
+                        selectedScreen = it
+                    )
+                }
 
             }
         }
@@ -49,14 +47,14 @@ fun BottomNavGraph(navController: NavHostController) {
 
 @Composable
 fun RowScope.AddItems(
-    currentDestination: NavDestination?,
     screen: BottomBarScreen,
-    navController: NavHostController
+    navController: NavHostController,
+    selectedScreen: String?
 ) {
 
 
         NavigationBarItem(
-            selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+            selected = screen.route == selectedScreen,
             onClick = { navController.navigate(screen.route) },
             icon = {
                 Icon(
