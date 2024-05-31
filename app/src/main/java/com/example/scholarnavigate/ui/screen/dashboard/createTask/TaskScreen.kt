@@ -42,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.scholarnavigate.courses
 import com.example.scholarnavigate.data.module.Course
 import com.example.scholarnavigate.data.util.Priority
@@ -55,13 +56,23 @@ import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import java.time.Instant
 
 @Composable
-fun TaskScreenNavigation(){
-    TaskScreen()
+fun TaskScreenNavigation(navController: NavController){
+    TaskScreen(
+        onBackButtonClick = {
+            navController.navigateUp()
+        },
+        onSaveButtonClick = {
+            navController.navigateUp()
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TaskScreen() {
+private fun TaskScreen(
+    onBackButtonClick: () -> Unit,
+    onSaveButtonClick: () -> Unit
+) {
     var title by remember {
         mutableStateOf("")
     }
@@ -121,7 +132,7 @@ private fun TaskScreen() {
                     isTaskExist = true,
                     isTaskComplete = false,
                     checkBoxBorderColor = Red,
-                    onBackButtonClick = { /*TODO*/ },
+                    onBackButtonClick = onBackButtonClick,
                     onDeleteButtonClick = { isDeleteTask = true },
                     onCheckBoxClick = {}
                     )
@@ -198,7 +209,7 @@ private fun TaskScreen() {
                 Box(modifier = Modifier.size(30.dp))
                 Button(
                     enabled = taskTitleError == null,
-                    onClick = { /*TODO*/ },
+                    onClick = onSaveButtonClick,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 20.dp)

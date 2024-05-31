@@ -1,7 +1,5 @@
 package com.example.scholarnavigate.ui.screen.dashboard
 
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -13,24 +11,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.scholarnavigate.navigate.navmodule.BottomBarScreen
-import com.example.scholarnavigate.ui.theme.onPrimaryDark
-import com.example.scholarnavigate.ui.theme.onPrimaryLight
 import com.example.scholarnavigate.ui.theme.onSecondaryContainerLight
-import com.example.scholarnavigate.ui.theme.secondaryContainerDark
-import com.example.scholarnavigate.ui.theme.secondaryContainerLight
 
 @Composable
 fun BottomNavGraph(navController: NavHostController) {
     val screens = listOf(
         BottomBarScreen.Dashboard,
         BottomBarScreen.Calender,
-        BottomBarScreen.Resources,
         BottomBarScreen.Settings,
     )
 
@@ -39,10 +30,7 @@ fun BottomNavGraph(navController: NavHostController) {
 
     val bottomBarDestination = screens.any{ it.route == currentDestination?.route}
     if (bottomBarDestination){
-        NavigationBar(
-            containerColor = onSecondaryContainerLight,
-            modifier = Modifier.fillMaxSize()
-        ) {
+        NavigationBar {
             screens.forEach{screen ->
                 NavigationBarItem(selected = currentDestination?.hierarchy?.any{
                     it.route == screen.route
@@ -56,13 +44,6 @@ fun BottomNavGraph(navController: NavHostController) {
                     label = {
                         Text(text = screen.route)
                     },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = color,
-                        selectedTextColor = color,
-                        indicatorColor = COlor.Unspecified,
-                        unselectedIconColor = Color.Black,
-                        unselectedTextColor = Color.Black,
-                    )
                 )
             }
         }

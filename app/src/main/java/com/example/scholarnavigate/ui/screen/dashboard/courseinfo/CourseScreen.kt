@@ -42,7 +42,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.scholarnavigate.data.module.Course
+import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
 import com.example.scholarnavigate.sessions
 import com.example.scholarnavigate.tasks
 import com.example.scholarnavigate.ui.components.CountCard
@@ -54,12 +56,20 @@ import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 
 
 @Composable
-fun CourseScreenNavigation(){
-    CourseScreen()
+fun CourseScreenNavigation(navController: NavController){
+    CourseScreen(
+        onAddTaskButton = {navController.navigate(DashboardScreens.TaskScreen.route)},
+        onBackButtonClick = {navController.navigateUp()},
+        onTaskCardClick = {navController.navigate(DashboardScreens.TaskScreen.route)}
+    )
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CourseScreen() {
+private fun CourseScreen(
+    onAddTaskButton: () -> Unit,
+    onBackButtonClick: () -> Unit,
+    onTaskCardClick: (Int?) -> Unit
+) {
     val listState = rememberLazyListState()
     val isFABExpanded by remember { derivedStateOf{listState.firstVisibleItemIndex == 0}}
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -117,7 +127,7 @@ private fun CourseScreen() {
             topBar = {
                 CourseinfoTopBar(
                     title = "CHM 121",
-                    onBackButtonClick = { /*TODO*/ },
+                    onBackButtonClick = onBackButtonClick,
                     onDeleteButtonClick = { isDeleteCourseOpen = true },
                     onEditButtonClick = {/*TODO*/},
                     scrollBehavior = scrollBehavior
@@ -125,7 +135,7 @@ private fun CourseScreen() {
             },
             floatingActionButton = {
                 ExtendedFloatingActionButton(
-                    onClick = { /*TODO*/ },
+                    onClick = onAddTaskButton,
                     icon = { Icon(imageVector = Icons.Default.Add, contentDescription = "Add Task")},
                     text = { Text(text = "Add Task")},
                     expanded = isFABExpanded
@@ -168,7 +178,9 @@ private fun CourseScreen() {
                 todoTasksList(
                     sectionTitle = "UPCOMING TASKS",
                     tasks = tasks,
-                    onTaskCardCLick = {},
+                    onTaskCardCLick = {task->
+                                      onTaskCardClick(task.taskId)
+                    },
                     onCheckBoxClick = {}
                 )
                 todoTasksList(

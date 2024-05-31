@@ -1,5 +1,6 @@
 package com.example.scholarnavigate.navigate
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -18,28 +19,27 @@ import com.example.scholarnavigate.ui.screen.dashboard.session.SessionScreenNavi
 fun HomeNavGraph(navController: NavHostController = rememberNavController()){
     NavHost(navController = navController, route = Graph.HOME , startDestination = BottomBarScreen.Dashboard.route){
         composable(BottomBarScreen.Dashboard.route){
-            DashboardScreenNavigation()
+            DashboardScreenNavigation(navController)
         }
         composable(BottomBarScreen.Settings.route){
-
+            Text(text = "Settings")
         }
         composable(BottomBarScreen.Calender.route){
-
+            Text(text = "Calendar")
         }
-        composable(BottomBarScreen.Resources.route){
+        dashboardScreen(navController)
 
-        }
     }
 }
 
 fun NavGraphBuilder.dashboardScreen(navController: NavHostController){
     composable(DashboardScreens.CourseScreen.route){
-        CourseScreenNavigation()
+        CourseScreenNavigation(navController)
     }
     composable(DashboardScreens.SessionScreen.route){
-        SessionScreenNavigation()
+        SessionScreenNavigation(navController)
     }
     composable(DashboardScreens.TaskScreen.route){
-        TaskScreenNavigation()
+        TaskScreenNavigation(navController)
     }
 }

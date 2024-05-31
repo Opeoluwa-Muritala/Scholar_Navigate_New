@@ -31,8 +31,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.scholarnavigate.courses
 import com.example.scholarnavigate.data.module.Course
+import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
 import com.example.scholarnavigate.sessions
 import com.example.scholarnavigate.ui.screen.dashboard.components.DeleteCourseDialog
 import com.example.scholarnavigate.ui.screen.dashboard.components.SelectCourseField
@@ -40,13 +42,16 @@ import com.example.scholarnavigate.ui.screen.dashboard.components.studySessionsL
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import com.ramcosta.composedestinations.annotation.Destination
 
-@Destination
 @Composable
-fun SessionScreenNavigation(){
-    SessionScreen()
+fun SessionScreenNavigation(navController: NavController){
+    SessionScreen(
+        onBackButtonClick = {navController.navigateUp()}
+    )
 }
 @Composable
-private fun SessionScreen() {
+private fun SessionScreen(
+   onBackButtonClick: () -> Unit
+) {
     var isCourseFieldOpen by rememberSaveable {
         mutableStateOf(false)
     }
@@ -68,9 +73,9 @@ private fun SessionScreen() {
         )
         Scaffold(
             topBar = {
-                SessionScreenTopAppBar {
-
-                }
+                SessionScreenTopAppBar(
+                    onBackCLick = onBackButtonClick
+                )
             }
         ) { paddingValues ->
             LazyColumn(

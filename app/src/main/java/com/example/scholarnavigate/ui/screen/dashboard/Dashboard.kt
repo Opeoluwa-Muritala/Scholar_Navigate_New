@@ -37,9 +37,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.scholarnavigate.R
 import com.example.scholarnavigate.courses
 import com.example.scholarnavigate.data.module.Course
+import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
 import com.example.scholarnavigate.sessions
 import com.example.scholarnavigate.tasks
 import com.example.scholarnavigate.ui.components.CountCard
@@ -51,11 +53,19 @@ import com.example.scholarnavigate.ui.screen.dashboard.components.todoTasksList
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 
 @Composable
-fun DashboardScreenNavigation(){
-    DashboardScreen()
+fun DashboardScreenNavigation(navController: NavController){
+    DashboardScreen(
+        onCourseCardClick = {navController.navigate(DashboardScreens.CourseScreen.route)},
+        onStartStudySessionButtonClick = {navController.navigate(DashboardScreens.SessionScreen.route)},
+        onTaskCardClick = {navController.navigate(DashboardScreens.TaskScreen.route)}
+    )
 }
 @Composable
-fun DashboardScreen() {
+fun DashboardScreen(
+    onCourseCardClick:(Int?) -> Unit,
+    onTaskCardClick:(Int?) -> Unit,
+    onStartStudySessionButtonClick:() -> Unit,
+) {
 
 
     var studyHours by remember {
@@ -125,12 +135,15 @@ fun DashboardScreen() {
                         courseList = courses,
                         onAddCourseClick = {
                             isAddSubjectDialogOpen = true
+                        },
+                        onCourseCardClick = {courseId ->
+                            onCourseCardClick(courseId)
                         }
                     )
                 }
                 item {
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = onStartStudySessionButtonClick,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 40.dp, vertical = 20.dp)
@@ -141,7 +154,7 @@ fun DashboardScreen() {
                 todoTasksList(
                     sectionTitle = "UPCOMING TASKS",
                     tasks = tasks,
-                    onTaskCardCLick = {},
+                    onTaskCardCLick = {onTaskCardClick(it.taskId)},
                     onCheckBoxClick = {}
                 )
                 item {
@@ -204,7 +217,8 @@ private fun SubjectCardSection(
     modifier: Modifier = Modifier,
     courseList: List<Course>,
     emptyLazyList: String = "You don't have any courses. \n Click the + button to add new course",
-    onAddCourseClick: () -> Unit
+    onAddCourseClick: () -> Unit,
+    onCourseCardClick: (Int?) -> Unit
 ) {
     Column(modifier) {
         Row(
@@ -248,9 +262,7 @@ private fun SubjectCardSection(
                 SubjectCard(
                     courseName = Course.name,
                     gradientColors = Course.colors,
-                    onClick = {
-
-                    }
+                    onClick = { onCourseCardClick(Course.courseId) }
                 )
             }
         }
