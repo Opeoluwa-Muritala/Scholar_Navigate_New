@@ -13,8 +13,7 @@ import com.example.scholarnavigate.navigate.HomeNavGraph
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 
 @Composable
-fun HomeScreen() {
-    val navController = rememberNavController()
+fun HomeScreen(navController: NavHostController = rememberNavController()) {
     ScholarNavigateTheme {
         Scaffold(
             bottomBar = {
@@ -24,7 +23,7 @@ fun HomeScreen() {
             Column(
                 Modifier.padding(paddingValues)
             ){
-                HomeNavGraph()
+                HomeNavGraph(navController)
             }
 
         }

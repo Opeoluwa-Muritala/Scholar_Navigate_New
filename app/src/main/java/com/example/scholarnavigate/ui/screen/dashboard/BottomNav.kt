@@ -10,6 +10,9 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -26,18 +29,22 @@ fun BottomNavGraph(navController: NavHostController) {
         BottomBarScreen.Calender,
         BottomBarScreen.Settings,
     )
+    var selectedScreen by remember {
+        mutableStateOf<BottomBarScreen>(BottomBarScreen.Dashboard)
+    }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    if (true){
+    if (screens.any{it.route == currentDestination?.route} ) {
         NavigationBar {
             screens.forEachIndexed{index, screen ->
                 NavigationBarItem(
-                    selected = screens[index] == selectedScreen,
-                    onClick = { navController.navigate(screen.route)
+                    selected = screens[index].route == selectedScreen.route,
+                    onClick = {
                         selectedScreen = screen
-                              },
+                        navController.navigate(screen.route)
+                    },
                     icon = {
                         Icon(
                             painterResource(id = screen.icon),

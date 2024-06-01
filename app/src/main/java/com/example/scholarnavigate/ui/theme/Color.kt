@@ -217,13 +217,13 @@ val surfaceContainerLowestDarkHighContrast = Color(0xFF0B0E15)
 val surfaceContainerLowDarkHighContrast = Color(0xFF181B23)
 val surfaceContainerDarkHighContrast = Color(0xFF1D2027)
 val surfaceContainerHighDarkHighContrast = Color(0xFF272A32)
-val surfaceContainerHighestDarkHighContrast = Color(0xFF32353D)
+val surfaceContainerHighestDarkHighContrast = Color(0xFFF54300)
 
 
 
-val Red = errorContainerDarkMediumContrast
+val Red = Color.Red
 val Blue = Color.Blue
-val Green = tertiaryContainerDarkMediumContrast
+val Green = Color.Green
 val Orange = surfaceContainerHighestDarkHighContrast
 
 
@@ -231,4 +231,4 @@ val gradient1 = listOf(tertiaryContainerDark, inversePrimaryDark)
 val gradient2 = listOf(errorLight, errorLightHighContrast)
 val gradient3 = listOf(primaryContainerDarkMediumContrast, errorLightHighContrast)
 val gradient4 = listOf(tertiaryContainerDark, surfaceBrightDarkHighContrast)
-val gradient5 = listOf(surfaceBrightLight, surfaceContainerLowestLight)
+val gradient5 = listOf(inversePrimaryDarkHighContrast, surfaceContainerHighDarkHighContrast)
