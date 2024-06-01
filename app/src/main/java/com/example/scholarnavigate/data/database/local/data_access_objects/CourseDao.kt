@@ -20,12 +20,12 @@ interface CourseDao {
     fun getTotalGoalHours() : Flow<Float>
 
     @Query("SELECT * FROM COURSE WHERE courseId = :courseId")
-    suspend fun getCourseById(courseId: Int): Subject?
+    suspend fun getCourseById(courseId: Int): Course?
 
     @Query("DELETE FROM COURSE WHERE courseId = :courseId")
     suspend fun deleteCourse(courseId: Int)
 
     @Query("SELECT * FROM COURSE")
-    fun getAllCourses(): Flow<List<Subject>>
+    fun getAllCourses(): Flow<List<Course>>
 
 }

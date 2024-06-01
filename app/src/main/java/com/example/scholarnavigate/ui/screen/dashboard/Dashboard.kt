@@ -82,10 +82,6 @@ fun DashboardScreen(
         mutableStateOf(Course.subjectCardColors.random())
     }
 
-
-
-
-
     ScholarNavigateTheme(isSystemInDarkTheme()) {
         var isAddSubjectDialogOpen by remember { mutableStateOf(false) }
         AddCourseDialog(
@@ -265,7 +261,7 @@ private fun SubjectCardSection(
             items(courseList) { Course ->
                 SubjectCard(
                     courseName = Course.name,
-                    gradientColors = Course.colors,
+                    gradientColors = Course.colors.map { Color(it) },
                     onClick = { onCourseCardClick(Course.courseId) }
                 )
             }

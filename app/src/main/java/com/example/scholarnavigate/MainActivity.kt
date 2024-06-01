@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.ui.graphics.toArgb
 import androidx.navigation.compose.rememberNavController
 import com.example.scholarnavigate.data.module.Course
 import com.example.scholarnavigate.data.module.Session
@@ -26,11 +27,11 @@ class MainActivity : ComponentActivity() {
 
 
 val courses = listOf(
-    Course("MAT 412", 2f, Course.subjectCardColors[0], 0),
-    Course("CHM 404", 10f, Course.subjectCardColors[1], 0),
-    Course("PHY 402", 6f, Course.subjectCardColors[2], 0),
-    Course("STA 410", 8f, Course.subjectCardColors[3], 0),
-    Course("GNS 424", 2f, Course.subjectCardColors[4], 0),
+    Course("MAT 412", 2f, Course.subjectCardColors[0].map { it.toArgb() }, 0),
+    Course("CHM 404", 10f, Course.subjectCardColors[1].map { it.toArgb() }, 0),
+    Course("PHY 402", 6f, Course.subjectCardColors[2].map { it.toArgb() }, 0),
+    Course("STA 410", 8f, Course.subjectCardColors[3].map { it.toArgb() }, 0),
+    Course("GNS 424", 2f, Course.subjectCardColors[4].map { it.toArgb() }, 0),
 )
 
 val tasks = listOf(

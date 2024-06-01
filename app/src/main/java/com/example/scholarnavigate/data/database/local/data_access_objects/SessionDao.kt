@@ -1,11 +1,13 @@
 package com.example.scholarnavigate.data.database.local.data_access_objects
 
+import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.scholarnavigate.data.module.Session
 import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface SessionDao {
     @Insert
     suspend fun insertSession(session: Session)

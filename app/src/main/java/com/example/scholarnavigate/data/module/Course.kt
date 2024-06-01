@@ -13,7 +13,7 @@ import com.example.scholarnavigate.ui.theme.gradient5
 data class Course(
     val name: String,
     val goalHours: Float,
-    val colors: List<Color>,
+    val colors: List<Int>,
     @PrimaryKey
     val courseId: Int? = null
 ){
