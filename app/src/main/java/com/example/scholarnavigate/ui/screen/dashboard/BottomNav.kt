@@ -32,14 +32,22 @@ fun BottomNavGraph(navController: NavHostController) {
 
     if (true){
         NavigationBar {
-            screens.forEach{screen ->
-                currentDestination?.route?.let {
-                    AddItems( screen = screen,
-                        navController = navController,
-                        selectedScreen = it
-                    )
-                }
-
+            screens.forEachIndexed{index, screen ->
+                NavigationBarItem(
+                    selected = screens[index] == selectedScreen,
+                    onClick = { navController.navigate(screen.route)
+                        selectedScreen = screen
+                              },
+                    icon = {
+                        Icon(
+                            painterResource(id = screen.icon),
+                            contentDescription = screen.route,
+                            modifier = Modifier.size(30.dp)
+                        )
+                    },
+                    label = {
+                        Text(text = screen.route)
+                    })
             }
         }
     }
@@ -49,21 +57,9 @@ fun BottomNavGraph(navController: NavHostController) {
 fun RowScope.AddItems(
     screen: BottomBarScreen,
     navController: NavHostController,
-    selectedScreen: String?
+    selectedScreen: BottomBarScreen
 ) {
 
 
-        NavigationBarItem(
-            selected = screen.route == selectedScreen,
-            onClick = { navController.navigate(screen.route) },
-            icon = {
-                Icon(
-                    painterResource(id = screen.icon),
-                    contentDescription = screen.route,
-                    modifier = Modifier.size(30.dp)
-                )
-            },
-            label = {
-            Text(text = screen.route)
-        })
+
 }
