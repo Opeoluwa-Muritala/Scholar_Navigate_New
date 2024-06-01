@@ -10,7 +10,9 @@ import com.example.scholarnavigate.data.module.Session
 import com.example.scholarnavigate.data.module.Task
 import com.example.scholarnavigate.navigate.RootNavigationGraph
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

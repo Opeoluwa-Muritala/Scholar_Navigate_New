@@ -31,19 +31,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.scholarnavigate.courses
 import com.example.scholarnavigate.data.module.Course
-import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
 import com.example.scholarnavigate.sessions
 import com.example.scholarnavigate.ui.screen.dashboard.components.DeleteCourseDialog
 import com.example.scholarnavigate.ui.screen.dashboard.components.SelectCourseField
 import com.example.scholarnavigate.ui.screen.dashboard.components.studySessionsList
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
-import com.ramcosta.composedestinations.annotation.Destination
+import com.example.scholarnavigate.viewmodels.SessionViewModel
 
 @Composable
 fun SessionScreenNavigation(navController: NavController){
+    val viewModel: SessionViewModel = hiltViewModel()
+
+
     SessionScreen(
         onBackButtonClick = {navController.navigateUp()}
     )

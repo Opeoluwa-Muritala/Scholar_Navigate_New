@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
@@ -42,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.scholarnavigate.courses
 import com.example.scholarnavigate.data.module.Course
@@ -53,10 +53,13 @@ import com.example.scholarnavigate.ui.screen.dashboard.components.TaskCheckBox
 import com.example.scholarnavigate.ui.screen.dashboard.components.TaskDatePicker
 import com.example.scholarnavigate.ui.theme.Red
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
+import com.example.scholarnavigate.viewmodels.TaskViewModel
 import java.time.Instant
 
 @Composable
 fun TaskScreenNavigation(navController: NavController){
+    val viewModel: TaskViewModel = hiltViewModel()
+
     TaskScreen(
         onBackButtonClick = {
             navController.navigateUp()

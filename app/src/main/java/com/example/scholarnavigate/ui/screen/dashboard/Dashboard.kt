@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.scholarnavigate.R
 import com.example.scholarnavigate.courses
@@ -51,9 +52,12 @@ import com.example.scholarnavigate.ui.screen.dashboard.components.SubjectCard
 import com.example.scholarnavigate.ui.screen.dashboard.components.studySessionsList
 import com.example.scholarnavigate.ui.screen.dashboard.components.todoTasksList
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
+import com.example.scholarnavigate.viewmodels.DashboardViewModel
 
 @Composable
 fun DashboardScreenNavigation(navController: NavController){
+    val viewModel: DashboardViewModel = hiltViewModel()
+
     DashboardScreen(
         onCourseCardClick = {navController.navigate(DashboardScreens.CourseScreen.route)},
         onStartStudySessionButtonClick = {navController.navigate(DashboardScreens.SessionScreen.route)},
