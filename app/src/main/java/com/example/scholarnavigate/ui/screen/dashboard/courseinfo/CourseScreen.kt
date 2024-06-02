@@ -56,7 +56,7 @@ import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 
 
 @Composable
-fun CourseScreenNavigation(navController: NavController){
+fun CourseScreenNavigation(navController: NavController, courseId: Int?){
     CourseScreen(
         onAddTaskButton = {navController.navigate(DashboardScreens.TaskScreen.route)},
         onBackButtonClick = {navController.navigateUp()},

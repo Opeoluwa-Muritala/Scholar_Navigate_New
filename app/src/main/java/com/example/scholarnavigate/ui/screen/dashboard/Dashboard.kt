@@ -38,10 +38,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.scholarnavigate.R
 import com.example.scholarnavigate.courses
 import com.example.scholarnavigate.data.module.Course
+import com.example.scholarnavigate.data.uimodule.DashboardState
 import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
 import com.example.scholarnavigate.sessions
 import com.example.scholarnavigate.tasks
@@ -53,48 +55,51 @@ import com.example.scholarnavigate.ui.screen.dashboard.components.studySessionsL
 import com.example.scholarnavigate.ui.screen.dashboard.components.todoTasksList
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import com.example.scholarnavigate.viewmodels.DashboardViewModel
+import com.example.scholarnavigate.viewmodels.events.DashBoardEvent
 
 @Composable
 fun DashboardScreenNavigation(navController: NavController){
     val viewModel: DashboardViewModel = hiltViewModel()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     DashboardScreen(
-        onCourseCardClick = {navController.navigate(DashboardScreens.CourseScreen.route)},
-        onStartStudySessionButtonClick = {navController.navigate(DashboardScreens.SessionScreen.route)},
-        onTaskCardClick = {navController.navigate(DashboardScreens.TaskScreen.route)}
+        state = state,
+        onCourseCardClick = {
+            navController.navigate("${DashboardScreens.CourseScreen.route}/$it")
+                            },
+        onStartStudySessionButtonClick = {
+            navController.navigate(DashboardScreens.SessionScreen.route)
+                                         },
+        onTaskCardClick = {
+            navController.navigate(DashboardScreens.TaskScreen.route)
+        }
     )
 }
 @Composable
 fun DashboardScreen(
+    state: DashboardState,
+    onEvent: (DashBoardEvent) -> Unit
     onCourseCardClick:(Int?) -> Unit,
     onTaskCardClick:(Int?) -> Unit,
     onStartStudySessionButtonClick:() -> Unit,
 ) {
 
 
-    var studyHours by remember {
-        mutableStateOf("")
-    }
-    var courseName by remember {
-        mutableStateOf("")
-    }
-    var selectedCardColor by remember {
-        mutableStateOf(Course.subjectCardColors.random())
-    }
+
 
     ScholarNavigateTheme(isSystemInDarkTheme()) {
         var isAddSubjectDialogOpen by remember { mutableStateOf(false) }
         AddCourseDialog(
             onDissmisRequest = { isAddSubjectDialogOpen = false },
-            courseName = courseName,
-            studyHours = studyHours,
-            oncourseNameChange ={courseName = it},
-            onStudyHoursChange = {studyHours = it},
+            courseName = state.courseName,
+            studyHours = state.goalStudyHours,
+            oncourseNameChange ={},
+            onStudyHoursChange = {},
             onConfirmButtonClick = { isAddSubjectDialogOpen = false },
             isOpen = isAddSubjectDialogOpen,
-            selectedColors = selectedCardColor,
+            selectedColors = state.courseCardColors,
             onColorChange = {
-                selectedCardColor = it
+
             }
         )
 
@@ -125,14 +130,14 @@ fun DashboardScreen(
                             .fillMaxWidth()
                             .padding(12.dp),
                         subjectCount = 5,
-                        studiedHours = "15",
-                        goalHours = "17"
+                        studiedHours = state.totalStudiedHours.toString(),
+                        goalHours = state.goalStudyHours.toString()
                     )
                 }
                 item {
                     SubjectCardSection(
                         modifier = Modifier.fillMaxWidth(),
-                        courseList = courses,
+                        courseList = state.courses,
                         onAddCourseClick = {
                             isAddSubjectDialogOpen = true
                         },

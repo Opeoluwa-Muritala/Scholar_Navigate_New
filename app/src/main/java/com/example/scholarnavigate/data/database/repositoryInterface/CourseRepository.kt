@@ -12,9 +12,9 @@ interface CourseRepository {
 
     fun getTotalGoalHours() : Flow<Float>
 
-    suspend fun getCourseById(courseId: Int): Subject?
+    suspend fun getCourseById(courseId: Int): Course?
 
     suspend fun deleteCourse(courseId: Int)
 
-    fun getAllCourses(): Flow<List<Subject>>
+    fun getAllCourses(): Flow<List<Course>>
 }

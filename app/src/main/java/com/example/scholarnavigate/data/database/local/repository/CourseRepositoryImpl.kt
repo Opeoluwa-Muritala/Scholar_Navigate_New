@@ -15,14 +15,14 @@ class CourseRepositoryImpl @Inject constructor(
     }
 
     override fun getTotalCourseCount(): Flow<Int> {
-        TODO("Not yet implemented")
+        return courseDao.getTotalCourseCount()
     }
 
     override fun getTotalGoalHours(): Flow<Float> {
-        TODO("Not yet implemented")
+        return courseDao.getTotalGoalHours()
     }
 
-    override suspend fun getCourseById(courseId: Int): Subject? {
+    override suspend fun getCourseById(courseId: Int): Course? {
         TODO("Not yet implemented")
     }
 
@@ -30,7 +30,7 @@ class CourseRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun getAllCourses(): Flow<List<Subject>> {
-        TODO("Not yet implemented")
+    override fun getAllCourses(): Flow<List<Course>> {
+        return courseDao.getAllCourses()
     }
 }
