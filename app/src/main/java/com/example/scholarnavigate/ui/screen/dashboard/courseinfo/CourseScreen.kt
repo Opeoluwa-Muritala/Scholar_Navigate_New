@@ -179,7 +179,7 @@ private fun CourseScreen(
                     sectionTitle = "UPCOMING TASKS",
                     tasks = tasks,
                     onTaskCardCLick = {task->
-                                      onTaskCardClick(task.taskId)
+                                      onTaskCardClick(task)
                     },
                     onCheckBoxClick = {}
                 )

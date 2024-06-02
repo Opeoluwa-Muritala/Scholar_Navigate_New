@@ -62,8 +62,10 @@ fun DashboardScreenNavigation(navController: NavController){
     val viewModel: DashboardViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+
     DashboardScreen(
         state = state,
+        onEvent = viewModel::onEvent,
         onCourseCardClick = {
             navController.navigate("${DashboardScreens.CourseScreen.route}/$it")
                             },
@@ -78,7 +80,7 @@ fun DashboardScreenNavigation(navController: NavController){
 @Composable
 fun DashboardScreen(
     state: DashboardState,
-    onEvent: (DashBoardEvent) -> Unit
+    onEvent: (DashBoardEvent) -> Unit,
     onCourseCardClick:(Int?) -> Unit,
     onTaskCardClick:(Int?) -> Unit,
     onStartStudySessionButtonClick:() -> Unit,
@@ -93,13 +95,15 @@ fun DashboardScreen(
             onDissmisRequest = { isAddSubjectDialogOpen = false },
             courseName = state.courseName,
             studyHours = state.goalStudyHours,
-            oncourseNameChange ={},
-            onStudyHoursChange = {},
-            onConfirmButtonClick = { isAddSubjectDialogOpen = false },
+            oncourseNameChange ={onEvent(DashBoardEvent.onCourseNameChange(it))},
+            onStudyHoursChange = {onEvent(DashBoardEvent.onGoalStudyHoursChange(it))},
+            onConfirmButtonClick = { isAddSubjectDialogOpen = false
+                onEvent(DashBoardEvent.SaveCourse)
+                                   },
             isOpen = isAddSubjectDialogOpen,
             selectedColors = state.courseCardColors,
             onColorChange = {
-
+                onEvent(DashBoardEvent.onCourseCardColorChange(it))
             }
         )
 
@@ -111,7 +115,10 @@ fun DashboardScreen(
             onDissmisRequest = { isDeleteDialogOpen = false },
             body = "Are you sure you want to delete this session? Your study hours will be reduced " +
                     "by this time. This action cannot be undone",
-            onConfirmButtonClick = { isDeleteDialogOpen = false },
+            onConfirmButtonClick = {
+                isDeleteDialogOpen = false
+                onEvent(DashBoardEvent.DeleteCourse)
+                                   },
             isOpen = isDeleteDialogOpen
         )
         Scaffold(
@@ -159,8 +166,10 @@ fun DashboardScreen(
                 todoTasksList(
                     sectionTitle = "UPCOMING TASKS",
                     tasks = tasks,
-                    onTaskCardCLick = {onTaskCardClick(it.taskId)},
-                    onCheckBoxClick = {}
+                    onTaskCardCLick = {onTaskCardClick(it)},
+                    onCheckBoxClick = {
+                        onEvent(DashBoardEvent.onTaskIsCompleteChange(it))
+                    }
                 )
                 item {
                     Spacer(modifier = Modifier.height(20.dp))
@@ -168,7 +177,9 @@ fun DashboardScreen(
                 studySessionsList(
                     sectionTitle = "RECENT STUDY SESSION",
                     sessions = sessions,
-                    onDeleteClick = {isDeleteDialogOpen = true}
+                    onDeleteClick = {isDeleteDialogOpen = true
+                        onEvent(DashBoardEvent.onDeleteSessionButtonClick(it))
+                    }
                 )
             }
 
