@@ -4,6 +4,8 @@ import com.example.scholarnavigate.data.database.local.data_access_objects.Sessi
 import com.example.scholarnavigate.data.module.Session
 import com.example.scholarnavigate.data.database.repositoryInterface.SessionRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.take
 import javax.inject.Inject
 
 class SessionRepositoryImpl @Inject constructor(
@@ -21,8 +23,12 @@ class SessionRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun getAllSessionForCourse(courseId: Int): Flow<List<Session>> {
-        TODO("Not yet implemented")
+    override fun getRecentFiveSessions(): Flow<List<Session>> {
+        return sessionDao.getAllSession().take(5)
+    }
+
+    override fun getRecentTenSessionForCourse(courseId: Int): Flow<List<Session>> {
+        return sessionDao.getRecentSessionForCourse(courseId).take(10)
     }
 
     override fun getTotalSessionDuration(): Flow<Long> {
@@ -30,7 +36,7 @@ class SessionRepositoryImpl @Inject constructor(
     }
 
     override fun getTotalSessionDurationForCourse(courseId: Int): Flow<Long> {
-        TODO("Not yet implemented")
+        return sessionDao.getTotalSessionDurationForCourse(courseId)
     }
 
     override fun deleteSessionByCourse(courseId: Int) {

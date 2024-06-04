@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,8 +43,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.scholarnavigate.data.module.Course
+import com.example.scholarnavigate.data.uimodule.CourseState
 import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
 import com.example.scholarnavigate.sessions
 import com.example.scholarnavigate.tasks
@@ -53,11 +56,18 @@ import com.example.scholarnavigate.ui.screen.dashboard.components.DeleteCourseDi
 import com.example.scholarnavigate.ui.screen.dashboard.components.studySessionsList
 import com.example.scholarnavigate.ui.screen.dashboard.components.todoTasksList
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
+import com.example.scholarnavigate.viewmodels.CourseViewModel
+import com.example.scholarnavigate.viewmodels.SessionViewModel
+import com.example.scholarnavigate.viewmodels.events.CourseEvent
 
 
 @Composable
 fun CourseScreenNavigation(navController: NavController, courseId: Int?){
+    val viewModel: CourseViewModel = hiltViewModel()
+    val state by viewModel.state.collectAsState()
     CourseScreen(
+        state = state,
+        onEvent = viewModel::onEvent,
         onAddTaskButton = {navController.navigate(DashboardScreens.TaskScreen.route)},
         onBackButtonClick = {navController.navigateUp()},
         onTaskCardClick = {navController.navigate(DashboardScreens.TaskScreen.route)}
@@ -66,6 +76,8 @@ fun CourseScreenNavigation(navController: NavController, courseId: Int?){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CourseScreen(
+    state: CourseState,
+    onEvent: (CourseEvent) -> Unit,
     onAddTaskButton: () -> Unit,
     onBackButtonClick: () -> Unit,
     onTaskCardClick: (Int?) -> Unit
@@ -74,29 +86,23 @@ private fun CourseScreen(
     val isFABExpanded by remember { derivedStateOf{listState.firstVisibleItemIndex == 0}}
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-    var studyHours by remember {
-        mutableStateOf("")
-    }
-    var courseName by remember {
-        mutableStateOf("")
-    }
-    var selectedCardColor by remember {
-        mutableStateOf(Course.subjectCardColors.random())
-    }
 
     ScholarNavigateTheme(isSystemInDarkTheme()) {
         var isAddSubjectDialogOpen by remember { mutableStateOf(false) }
         AddCourseDialog(
             onDissmisRequest = { isAddSubjectDialogOpen = false },
-            courseName = courseName,
-            studyHours = studyHours,
-            oncourseNameChange ={courseName = it},
-            onStudyHoursChange = {studyHours = it},
-            onConfirmButtonClick = { isAddSubjectDialogOpen = false },
+            courseName = state.courseName,
+            studyHours = state.goalStudyHours,
+            oncourseNameChange ={onEvent(CourseEvent.OnCourseCardNameChange(it))},
+            onStudyHoursChange = {onEvent(CourseEvent.OnGoalStudyHoursChange(it))},
+            onConfirmButtonClick = {
+                onEvent(CourseEvent.UpdateSubject)
+                isAddSubjectDialogOpen = false
+                                   },
             isOpen = isAddSubjectDialogOpen,
-            selectedColors = selectedCardColor,
+            selectedColors = state.courseCardColors,
             onColorChange = {
-                selectedCardColor = it
+                onEvent(CourseEvent.OnCourseCardColorChange(it))
             }
         )
 
@@ -108,10 +114,12 @@ private fun CourseScreen(
             mutableStateOf(false)
         }
         DeleteCourseDialog(
-            onDissmisRequest = { isDeleteDialogOpen = false },
+            onDissmisRequest = {isDeleteDialogOpen = false},
             body = "Are you sure you want to delete this session? Your study hours will be reduced " +
                     "by this time. This action cannot be undone",
-            onConfirmButtonClick = { isDeleteDialogOpen = false },
+            onConfirmButtonClick = {
+                onEvent(CourseEvent.DeleteSession)
+                isDeleteDialogOpen = false },
             isOpen = isDeleteDialogOpen
         )
         DeleteCourseDialog(
@@ -119,14 +127,16 @@ private fun CourseScreen(
             onDissmisRequest = { isDeleteCourseOpen = false },
             body = "Are you sure you want to delete this course? All related" +
                     "tasks and study sessions will be permanently removed. This action cannot be undone",
-            onConfirmButtonClick = { isDeleteCourseOpen = false },
+            onConfirmButtonClick = {
+                onEvent(CourseEvent.DeleteCourse)
+                isDeleteCourseOpen = false },
             isOpen = isDeleteCourseOpen
         )
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 CourseinfoTopBar(
-                    title = "CHM 121",
+                    title = state.courseName,
                     onBackButtonClick = onBackButtonClick,
                     onDeleteButtonClick = { isDeleteCourseOpen = true },
                     onEditButtonClick = {/*TODO*/},
@@ -154,48 +164,33 @@ private fun CourseScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(12.dp),
-                        studiedHours = "10",
-                        goalHours = "15",
-                        progress = 0.75f
+                        studiedHours = state.studiedHours.toString(),
+                        goalHours = state.goalStudyHours,
+                        progress = state.progress
                     )
-                }
-                item {
-                    Text(
-                        text = "Course Info",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(12.dp)
-                    )
-                    Text(
-                        text = " CHM 121 is a course bla that bla exist in bla bla bla ejo. It consist of many intricasies",
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.headlineSmall,
-                        modifier = Modifier.padding(10.dp),
-                        textAlign = TextAlign.Center
-                    )
-
                 }
                 todoTasksList(
                     sectionTitle = "UPCOMING TASKS",
-                    tasks = tasks,
-                    onTaskCardCLick = {task->
-                                      onTaskCardClick(task)
-                    },
-                    onCheckBoxClick = {}
+                    tasks = state.upcomingTask,
+                    onTaskCardCLick = onTaskCardClick,
+                    onCheckBoxClick = {onEvent(CourseEvent.OnTaskIsCompleteChange(it)) }
                 )
                 todoTasksList(
                     sectionTitle = "COMPLETED TASKS",
-                    tasks = tasks,
-                    onTaskCardCLick = {},
-                    onCheckBoxClick = {}
+                    tasks = state.completedTask,
+                    onTaskCardCLick = onTaskCardClick,
+                    onCheckBoxClick = {onEvent(CourseEvent.OnTaskIsCompleteChange(it))}
                 )
                 item {
                     Spacer(modifier = Modifier.height(20.dp))
                 }
                 studySessionsList(
                     sectionTitle = "RECENT STUDY SESSION",
-                    sessions = sessions,
-                    onDeleteClick = {isDeleteDialogOpen = true}
+                    sessions = state.recentSession,
+                    onDeleteClick = {
+                        onEvent(CourseEvent.OnDeleteSessionButtonClick(it))
+                        isDeleteDialogOpen = true
+                    }
                 )
             }
         }

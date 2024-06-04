@@ -25,8 +25,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,15 +42,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.scholarnavigate.R
-import com.example.scholarnavigate.courses
 import com.example.scholarnavigate.data.module.Course
+import com.example.scholarnavigate.data.module.Session
+import com.example.scholarnavigate.data.module.Task
 import com.example.scholarnavigate.data.uimodule.DashboardState
+import com.example.scholarnavigate.data.util.SnackBarEvent
 import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
-import com.example.scholarnavigate.sessions
-import com.example.scholarnavigate.tasks
 import com.example.scholarnavigate.ui.components.CountCard
 import com.example.scholarnavigate.ui.screen.dashboard.components.AddCourseDialog
 import com.example.scholarnavigate.ui.screen.dashboard.components.DeleteCourseDialog
@@ -56,16 +59,23 @@ import com.example.scholarnavigate.ui.screen.dashboard.components.todoTasksList
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import com.example.scholarnavigate.viewmodels.DashboardViewModel
 import com.example.scholarnavigate.viewmodels.events.DashBoardEvent
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun DashboardScreenNavigation(navController: NavController){
     val viewModel: DashboardViewModel = hiltViewModel()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsState()
+    val tasks by viewModel.tasks.collectAsState()
+    val recentSessions by viewModel.sessions.collectAsState()
 
 
     DashboardScreen(
         state = state,
         onEvent = viewModel::onEvent,
+        tasks = tasks,
+        recentSession = recentSessions,
+        snackBarEvent = viewModel.snackBarEvenFlow,
         onCourseCardClick = {
             navController.navigate("${DashboardScreens.CourseScreen.route}/$it")
                             },
@@ -80,6 +90,9 @@ fun DashboardScreenNavigation(navController: NavController){
 @Composable
 fun DashboardScreen(
     state: DashboardState,
+    tasks: List<Task>,
+    recentSession: List<Session>,
+    snackBarEvent: SharedFlow<SnackBarEvent>,
     onEvent: (DashBoardEvent) -> Unit,
     onCourseCardClick:(Int?) -> Unit,
     onTaskCardClick:(Int?) -> Unit,
@@ -90,6 +103,9 @@ fun DashboardScreen(
 
 
     ScholarNavigateTheme(isSystemInDarkTheme()) {
+        val snacbarHostState = remember { SnackbarHostState() }
+
+
         var isAddSubjectDialogOpen by remember { mutableStateOf(false) }
         AddCourseDialog(
             onDissmisRequest = { isAddSubjectDialogOpen = false },
@@ -121,7 +137,23 @@ fun DashboardScreen(
                                    },
             isOpen = isDeleteDialogOpen
         )
+
+        LaunchedEffect(key1 = true){
+            snackBarEvent.collectLatest { event ->
+                when (event) {
+                    is SnackBarEvent.ShowSnackBar -> {
+                        snacbarHostState.showSnackbar(
+                            message = event.message,
+                            duration = event.duration
+                        )
+                    }
+                }
+            }
+        }
+
+
         Scaffold(
+            snackbarHost = { SnackbarHost (snacbarHostState)},
             topBar = {
                 DashboardTopAppBar()
             },
@@ -176,7 +208,7 @@ fun DashboardScreen(
                 }
                 studySessionsList(
                     sectionTitle = "RECENT STUDY SESSION",
-                    sessions = sessions,
+                    sessions = recentSession,
                     onDeleteClick = {isDeleteDialogOpen = true
                         onEvent(DashBoardEvent.onDeleteSessionButtonClick(it))
                     }

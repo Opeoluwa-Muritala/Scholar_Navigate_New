@@ -13,7 +13,6 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scholarnavigate.navigate.navmodule.BottomBarScreen
 import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
-import com.example.scholarnavigate.ui.screen.dashboard.DashboardScreen
 import com.example.scholarnavigate.ui.screen.dashboard.DashboardScreenNavigation
 import com.example.scholarnavigate.ui.screen.dashboard.courseinfo.CourseScreenNavigation
 import com.example.scholarnavigate.ui.screen.dashboard.createTask.TaskScreenNavigation

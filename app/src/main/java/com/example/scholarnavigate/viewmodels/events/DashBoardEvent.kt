@@ -15,7 +15,7 @@ sealed class DashBoardEvent {
 
     data class onCourseCardColorChange(val colors: List<Color>): DashBoardEvent()
 
-    data class onCourseNameChange(val name:String): DashBoardEvent()
+    data class onCourseNameChange(val name: String): DashBoardEvent()
 
     data class onGoalStudyHoursChange(val hours: String): DashBoardEvent()
 }
