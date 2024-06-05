@@ -11,7 +11,7 @@ class TaskRepositoryImpl @Inject constructor(
     val taskDao: TaskDao
 ): TaskRepository {
     override suspend fun upsertTask(task: Task) {
-        taskDao.upsertTask(task)
+        return taskDao.upsertTask(task)
     }
 
     override fun getUpcomingTasksForSubject(courseId: Int): Flow<List<Task>> {

@@ -12,7 +12,7 @@ class SessionRepositoryImpl @Inject constructor(
     val sessionDao: SessionDao
 ): SessionRepository {
     override suspend fun insertSession(session: Session) {
-        sessionDao.insertSession(session)
+        return sessionDao.insertSession(session)
     }
 
     override suspend fun deleteSession(session: Session) {

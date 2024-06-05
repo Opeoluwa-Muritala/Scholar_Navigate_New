@@ -15,7 +15,7 @@ class CourseRepositoryImpl @Inject constructor(
     private val sessionDao: SessionDao
 ): CourseRepository {
     override suspend fun upsertCourse(course: Course) {
-        courseDao.upsertCourse(course)
+        return courseDao.upsertCourse(course)
     }
 
     override fun getTotalCourseCount(): Flow<Int> {

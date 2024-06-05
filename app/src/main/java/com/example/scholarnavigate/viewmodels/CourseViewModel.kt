@@ -31,17 +31,18 @@ class CourseViewModel @Inject constructor(
     private val courseRepository: CourseRepository,
     private val sessionRepository: SessionRepository,
     private val taskRepository: TaskRepository,
+    private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
-    val courseId = 0
+    val courseId: Int? = savedStateHandle["courseId"]
     // Get The Course Id in the View Model
 
     private val _state = MutableStateFlow(CourseState())
     val state = combine(
         _state,
-        taskRepository.getUpcomingTasksForSubject(0),
-        taskRepository.getCompletedTasksForSubject(0),
-        sessionRepository.getRecentTenSessionForCourse(0),
-        sessionRepository.getTotalSessionDurationForCourse(0)
+        taskRepository.getUpcomingTasksForSubject(courseId!!),
+        taskRepository.getCompletedTasksForSubject(courseId),
+        sessionRepository.getRecentTenSessionForCourse(courseId),
+        sessionRepository.getTotalSessionDurationForCourse(courseId)
     ){ state, upcomingTasks, completedTasks, recentSessions, totalSessionDuration ->
         state.copy(
             upcomingTask = upcomingTasks,
@@ -144,7 +145,7 @@ class CourseViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 courseRepository
-                    .getCourseById(0)?.let { course ->
+                    .getCourseById(courseId!!)?.let { course ->
                         _state.update {
                             it.copy(
                                 courseName = course.name,

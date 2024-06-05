@@ -67,8 +67,8 @@ import kotlinx.coroutines.flow.collectLatest
 fun DashboardScreenNavigation(navController: NavController){
     val viewModel: DashboardViewModel = hiltViewModel()
     val state by viewModel.state.collectAsState()
-    val tasks by viewModel.tasks.collectAsStateWithLifecycle()
-    val recentSessions by viewModel.sessions.collectAsStateWithLifecycle()
+    val tasks by viewModel.tasks.collectAsState()
+    val recentSessions by viewModel.sessions.collectAsState()
 
 
     DashboardScreen(

@@ -6,10 +6,13 @@ import com.example.scholarnavigate.data.database.repositoryInterface.CourseRepos
 import com.example.scholarnavigate.data.database.repositoryInterface.TaskRepository
 import com.example.scholarnavigate.data.module.Task
 import com.example.scholarnavigate.data.uimodule.TaskState
+import com.example.scholarnavigate.data.util.SnackBarEvent
 import com.example.scholarnavigate.viewmodels.events.TaskEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -26,7 +29,7 @@ class TaskViewModel @Inject constructor(
     val state = combine(
         _state,
         courseRepository.getAllCourses()
-    ){ state,courses ->
+    ) { state, courses ->
         state.copy(
             subjects = courses
         )
@@ -36,8 +39,8 @@ class TaskViewModel @Inject constructor(
         initialValue = TaskState()
     )
 
-    fun OnEvent(event: TaskEvent){
-        when (event){
+    fun OnEvent(event: TaskEvent) {
+        when (event) {
             is TaskEvent.OnDateChange -> {
                 _state.update {
                     it.copy(
@@ -45,6 +48,7 @@ class TaskViewModel @Inject constructor(
                     )
                 }
             }
+
             is TaskEvent.OnDescriptionChange -> {
                 _state.update {
                     it.copy(
@@ -52,6 +56,7 @@ class TaskViewModel @Inject constructor(
                     )
                 }
             }
+
             TaskEvent.OnIsCompleteChange -> {
                 _state.update {
                     it.copy(
@@ -59,6 +64,7 @@ class TaskViewModel @Inject constructor(
                     )
                 }
             }
+
             is TaskEvent.OnPriorityChange -> {
                 _state.update {
                     it.copy(
@@ -66,6 +72,7 @@ class TaskViewModel @Inject constructor(
                     )
                 }
             }
+
             is TaskEvent.OnRelatedCourseSelect -> {
                 _state.update {
                     it.copy(
@@ -74,6 +81,7 @@ class TaskViewModel @Inject constructor(
                     )
                 }
             }
+
             is TaskEvent.OnTitleChange -> {
                 _state.update {
                     it.copy(
@@ -81,33 +89,48 @@ class TaskViewModel @Inject constructor(
                     )
                 }
             }
+
             TaskEvent.SaveTask -> saveTask()
             TaskEvent.DeleteTask -> TODO()
         }
     }
 
+    private val _snackbarEventFlow = MutableSharedFlow<SnackBarEvent>()
+    val snackBarEvenFlow = _snackbarEventFlow.asSharedFlow()
     private fun saveTask() {
         val state = _state.value
 
 
 
         viewModelScope.launch {
-            if (state.relatedToSubject == null || state.courseId == null){
-                return@launch
-            }
-            taskRepository.upsertTask(
-                task = Task(
-                    title = state.title,
-                    description = state.description,
-                    dueDates = state.dueDate ?: Instant.now().toEpochMilli(),
-                    priority = state.priority,
-                    relatedCourses = state.relatedToSubject,
-                    isComplete = state.isTaskComplete,
-                    taskSubjectId = state.courseId,
-                    taskId = state.currentTaskId
+            try {
+                if (state.relatedToSubject == null || state.courseId == null) {
+                    return@launch
+                }
+                taskRepository.upsertTask(
+                    task = Task(
+                        title = state.title,
+                        description = state.description,
+                        dueDates = state.dueDate ?: Instant.now().toEpochMilli(),
+                        priority = state.priority,
+                        relatedCourses = state.relatedToSubject,
+                        isComplete = state.isTaskComplete,
+                        taskSubjectId = state.courseId,
+                        taskId = state.currentTaskId
+                    )
                 )
-            )
+                _snackbarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar(
+                        "Task Saved Successfully",
+                    )
+                )
+            } catch (e: Exception) {
+                _snackbarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar(
+                        "Couldn't Save Task",
+                    )
+                )
+            }
         }
     }
-
 }

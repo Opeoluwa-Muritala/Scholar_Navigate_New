@@ -28,10 +28,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +51,7 @@ import com.example.scholarnavigate.courses
 import com.example.scholarnavigate.data.module.Course
 import com.example.scholarnavigate.data.uimodule.TaskState
 import com.example.scholarnavigate.data.util.Priority
+import com.example.scholarnavigate.data.util.SnackBarEvent
 import com.example.scholarnavigate.data.util.changeMillisToDateString
 import com.example.scholarnavigate.ui.screen.dashboard.components.DeleteCourseDialog
 import com.example.scholarnavigate.ui.screen.dashboard.components.SelectCourseField
@@ -57,6 +61,8 @@ import com.example.scholarnavigate.ui.theme.Red
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import com.example.scholarnavigate.viewmodels.TaskViewModel
 import com.example.scholarnavigate.viewmodels.events.TaskEvent
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collectLatest
 import java.time.Instant
 
 @Composable
@@ -67,6 +73,7 @@ fun TaskScreenNavigation(navController: NavController){
     TaskScreen(
         state = state,
         onEvent = viewModel::OnEvent,
+        snackBarEvent = viewModel.snackBarEvenFlow,
         onBackButtonClick = {
             navController.navigateUp()
         },
@@ -82,8 +89,9 @@ private fun TaskScreen(
     state: TaskState,
     onEvent: (TaskEvent) -> Unit,
     onBackButtonClick: () -> Unit,
-    onSaveButtonClick: () -> Unit
-) {
+    onSaveButtonClick: () -> Unit,
+    snackBarEvent: SharedFlow<SnackBarEvent>,
+    ) {
     var taskTitleError by rememberSaveable {
         mutableStateOf<String?>(null)
     }
@@ -113,6 +121,22 @@ private fun TaskScreen(
 
     ScholarNavigateTheme {
 
+        val snackbarHostState = remember { SnackbarHostState() }
+
+        LaunchedEffect(key1 = true){
+            snackBarEvent.collectLatest { event ->
+                when (event) {
+                    is SnackBarEvent.ShowSnackBar -> {
+                        snackbarHostState.showSnackbar(
+                            message = event.message,
+                            duration = event.duration
+                        )
+                    }
+
+                    else -> {}
+                }
+            }
+        }
 
         DeleteCourseDialog(
             title = "Delete Task",
@@ -136,6 +160,7 @@ private fun TaskScreen(
         )
 
         Scaffold(
+            snackbarHost = { SnackbarHost(snackbarHostState)},
             topBar = {
                 TaskScreenTopAppBar(
                     isTaskExist = state.currentTaskId != null,
