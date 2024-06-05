@@ -1,5 +1,6 @@
 package com.example.scholarnavigate.viewmodels
 
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -124,13 +125,14 @@ class DashboardViewModel @Inject constructor(
                }
                _snackbarEventFlow.emit(
                    SnackBarEvent.ShowSnackBar(
-                       "Subject Saved Successfully",
+                       "Course Saved Successfully",
                    )
                )
            } catch (e:Exception){
                _snackbarEventFlow.emit(
                    SnackBarEvent.ShowSnackBar(
                        "Couldn't Save Course. ${e.message}",
+                       duration = SnackbarDuration.Long
                    )
                )
            }

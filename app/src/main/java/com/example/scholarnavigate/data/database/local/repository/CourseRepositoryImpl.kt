@@ -1,6 +1,8 @@
 package com.example.scholarnavigate.data.database.local.repository
 
 import com.example.scholarnavigate.data.database.local.data_access_objects.CourseDao
+import com.example.scholarnavigate.data.database.local.data_access_objects.SessionDao
+import com.example.scholarnavigate.data.database.local.data_access_objects.TaskDao
 import com.example.scholarnavigate.data.module.Course
 import com.example.scholarnavigate.data.database.repositoryInterface.CourseRepository
 import kotlinx.coroutines.flow.Flow
@@ -8,7 +10,9 @@ import javax.inject.Inject
 import javax.security.auth.Subject
 
 class CourseRepositoryImpl @Inject constructor(
-    private val courseDao: CourseDao
+    private val courseDao: CourseDao,
+    private val taskDao: TaskDao,
+    private val sessionDao: SessionDao
 ): CourseRepository {
     override suspend fun upsertCourse(course: Course) {
         courseDao.upsertCourse(course)
@@ -23,11 +27,13 @@ class CourseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCourseById(courseId: Int): Course? {
-        TODO("Not yet implemented")
+        return courseDao.getCourseById(courseId)
     }
 
     override suspend fun deleteCourse(courseId: Int) {
-        TODO("Not yet implemented")
+        taskDao.deleteTaskBySubjectId(courseId)
+        sessionDao.deleteSessionByCourse(courseId)
+        courseDao.deleteCourse(courseId)
     }
 
     override fun getAllCourses(): Flow<List<Course>> {

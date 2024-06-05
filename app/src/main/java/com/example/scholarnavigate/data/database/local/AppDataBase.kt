@@ -12,7 +12,8 @@ import com.example.scholarnavigate.data.module.Task
 
 @Database(
     entities = [Course::class, Session::class, Task::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 @TypeConverters(colorListConverter::class)
 abstract class AppDataBase :RoomDatabase(){

@@ -42,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.scholarnavigate.R
 import com.example.scholarnavigate.data.module.Course
@@ -66,8 +67,8 @@ import kotlinx.coroutines.flow.collectLatest
 fun DashboardScreenNavigation(navController: NavController){
     val viewModel: DashboardViewModel = hiltViewModel()
     val state by viewModel.state.collectAsState()
-    val tasks by viewModel.tasks.collectAsState()
-    val recentSessions by viewModel.sessions.collectAsState()
+    val tasks by viewModel.tasks.collectAsStateWithLifecycle()
+    val recentSessions by viewModel.sessions.collectAsStateWithLifecycle()
 
 
     DashboardScreen(
@@ -103,7 +104,23 @@ fun DashboardScreen(
 
 
     ScholarNavigateTheme(isSystemInDarkTheme()) {
-        val snacbarHostState = remember { SnackbarHostState() }
+        val snackbarHostState = remember { SnackbarHostState() }
+
+        LaunchedEffect(key1 = true){
+            snackBarEvent.collectLatest { event ->
+                when (event) {
+                    is SnackBarEvent.ShowSnackBar -> {
+                        snackbarHostState.showSnackbar(
+                            message = event.message,
+                            duration = event.duration
+                        )
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+
 
 
         var isAddSubjectDialogOpen by remember { mutableStateOf(false) }
@@ -138,22 +155,10 @@ fun DashboardScreen(
             isOpen = isDeleteDialogOpen
         )
 
-        LaunchedEffect(key1 = true){
-            snackBarEvent.collectLatest { event ->
-                when (event) {
-                    is SnackBarEvent.ShowSnackBar -> {
-                        snacbarHostState.showSnackbar(
-                            message = event.message,
-                            duration = event.duration
-                        )
-                    }
-                }
-            }
-        }
 
 
         Scaffold(
-            snackbarHost = { SnackbarHost (snacbarHostState)},
+            snackbarHost = { SnackbarHost (snackbarHostState)},
             topBar = {
                 DashboardTopAppBar()
             },
@@ -168,9 +173,9 @@ fun DashboardScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(12.dp),
-                        subjectCount = 5,
+                        subjectCount = state.totalCourseCount,
                         studiedHours = state.totalStudiedHours.toString(),
-                        goalHours = state.goalStudyHours.toString()
+                        goalHours = state.totalGoalStudyHours.toString()
                     )
                 }
                 item {

@@ -1,5 +1,6 @@
 package com.example.scholarnavigate.ui.screen.dashboard.courseinfo
 
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,10 +27,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -47,6 +51,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.scholarnavigate.data.module.Course
 import com.example.scholarnavigate.data.uimodule.CourseState
+import com.example.scholarnavigate.data.util.SnackBarEvent
 import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
 import com.example.scholarnavigate.sessions
 import com.example.scholarnavigate.tasks
@@ -59,15 +64,30 @@ import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import com.example.scholarnavigate.viewmodels.CourseViewModel
 import com.example.scholarnavigate.viewmodels.SessionViewModel
 import com.example.scholarnavigate.viewmodels.events.CourseEvent
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collectLatest
 
 
 @Composable
 fun CourseScreenNavigation(navController: NavController, courseId: Int?){
     val viewModel: CourseViewModel = hiltViewModel()
     val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(key1 = viewModel.snackBarEvenFlow){
+        viewModel.snackBarEvenFlow.collectLatest {
+            when (it){
+                is SnackBarEvent.NavigateUp -> navController.navigateUp()
+                else -> {}
+            }
+
+        }
+    }
+
+    Log.d("courseId", "Course ID: $courseId")
     CourseScreen(
         state = state,
         onEvent = viewModel::onEvent,
+        snackBarEvent = viewModel.snackBarEvenFlow,
         onAddTaskButton = {navController.navigate(DashboardScreens.TaskScreen.route)},
         onBackButtonClick = {navController.navigateUp()},
         onTaskCardClick = {navController.navigate(DashboardScreens.TaskScreen.route)}
@@ -80,7 +100,8 @@ private fun CourseScreen(
     onEvent: (CourseEvent) -> Unit,
     onAddTaskButton: () -> Unit,
     onBackButtonClick: () -> Unit,
-    onTaskCardClick: (Int?) -> Unit
+    onTaskCardClick: (Int?) -> Unit,
+    snackBarEvent: SharedFlow<SnackBarEvent>,
 ) {
     val listState = rememberLazyListState()
     val isFABExpanded by remember { derivedStateOf{listState.firstVisibleItemIndex == 0}}
@@ -88,6 +109,27 @@ private fun CourseScreen(
 
 
     ScholarNavigateTheme(isSystemInDarkTheme()) {
+        val snackbarHostState = remember { SnackbarHostState() }
+        LaunchedEffect(key1 = true){
+            snackBarEvent.collectLatest { event ->
+                when (event) {
+                    is SnackBarEvent.ShowSnackBar -> {
+                        snackbarHostState.showSnackbar(
+                            message = event.message,
+                            duration = event.duration
+                        )
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+
+        LaunchedEffect(key1 = state.studiedHours, key2 = state.goalStudyHours){
+            onEvent(CourseEvent.UpdateProgress)
+        }
+
+
         var isAddSubjectDialogOpen by remember { mutableStateOf(false) }
         AddCourseDialog(
             onDissmisRequest = { isAddSubjectDialogOpen = false },
@@ -129,10 +171,13 @@ private fun CourseScreen(
                     "tasks and study sessions will be permanently removed. This action cannot be undone",
             onConfirmButtonClick = {
                 onEvent(CourseEvent.DeleteCourse)
-                isDeleteCourseOpen = false },
+                isDeleteCourseOpen = false
+
+                                   },
             isOpen = isDeleteCourseOpen
         )
         Scaffold(
+            snackbarHost = { SnackbarHost (snackbarHostState) },
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 CourseinfoTopBar(
