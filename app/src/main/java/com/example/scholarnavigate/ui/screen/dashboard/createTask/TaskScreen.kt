@@ -47,7 +47,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.scholarnavigate.courses
 import com.example.scholarnavigate.data.module.Course
 import com.example.scholarnavigate.data.uimodule.TaskState
 import com.example.scholarnavigate.data.util.Priority
