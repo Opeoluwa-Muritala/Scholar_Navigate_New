@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.NavController
 import com.example.scholarnavigate.R
 import com.example.scholarnavigate.data.module.Course
@@ -78,7 +79,7 @@ fun DashboardScreenNavigation(navController: NavController){
         recentSession = recentSessions,
         snackBarEvent = viewModel.snackBarEvenFlow,
         onCourseCardClick = {
-            navController.navigate("${DashboardScreens.CourseScreen.route}/$it")
+            navController.navigate(DashboardScreens.CourseScreen.route)
                             },
         onStartStudySessionButtonClick = {
             navController.navigate(DashboardScreens.SessionScreen.route)
@@ -130,8 +131,9 @@ fun DashboardScreen(
             studyHours = state.goalStudyHours,
             oncourseNameChange ={onEvent(DashBoardEvent.onCourseNameChange(it))},
             onStudyHoursChange = {onEvent(DashBoardEvent.onGoalStudyHoursChange(it))},
-            onConfirmButtonClick = { isAddSubjectDialogOpen = false
+            onConfirmButtonClick = {
                 onEvent(DashBoardEvent.SaveCourse)
+                isAddSubjectDialogOpen = false
                                    },
             isOpen = isAddSubjectDialogOpen,
             selectedColors = state.courseCardColors,
@@ -311,11 +313,11 @@ private fun SubjectCardSection(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(start = 12.dp, end = 12.dp)
         ) {
-            items(courseList) { Course ->
+            items(courseList) { course ->
                 SubjectCard(
-                    courseName = Course.name,
-                    gradientColors = Course.colors.map { Color(it) },
-                    onClick = { onCourseCardClick(Course.courseId) }
+                    courseName = course.name,
+                    gradientColors = course.colors.map { Color(it) },
+                    onClick = { onCourseCardClick(course.courseId) }
                 )
             }
         }

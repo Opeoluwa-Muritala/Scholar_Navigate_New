@@ -112,7 +112,7 @@ class TaskViewModel @Inject constructor(
                         title = state.title,
                         description = state.description,
                         dueDates = state.dueDate ?: Instant.now().toEpochMilli(),
-                        priority = state.priority,
+                        priority = state.priority.value,
                         relatedCourses = state.relatedToSubject,
                         isComplete = state.isTaskComplete,
                         taskSubjectId = state.courseId,

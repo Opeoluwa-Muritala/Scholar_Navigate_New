@@ -123,7 +123,7 @@ fun AddCourseDialog(
             },
             confirmButton = {
                 TextButton(
-                    onClick = onDissmisRequest,
+                    onClick = onConfirmButtonClick,
                     enabled = studyHoursError == null && courseNameError == null
                 ) {
                     Text(text = "Save")
@@ -131,7 +131,7 @@ fun AddCourseDialog(
             },
             dismissButton = {
                 TextButton(
-                    onClick = onConfirmButtonClick,
+                    onClick = onDissmisRequest,
                     enabled = studyHoursError == null && courseNameError == null
                 ) {
                     Text(text = "Cancel")

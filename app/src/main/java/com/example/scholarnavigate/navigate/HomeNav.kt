@@ -37,18 +37,13 @@ fun HomeNavGraph(navController: NavHostController = rememberNavController()){
 
 fun NavGraphBuilder.dashboardScreen(navController: NavHostController){
     navigation(route = Graph.DETAILS, startDestination = DashboardScreens.CourseScreen.route){
-        composable("${DashboardScreens.CourseScreen.route}/{courseId}",
-            arguments = listOf(
-                navArgument("courseId"){
-                    type = NavType.IntType
-                }
-            )
+        composable(DashboardScreens.CourseScreen.route,
         ){backStackEntry->
-            val courseId = backStackEntry.arguments?.getInt("courseId")
+            val courseId = backStackEntry.arguments?.getInt("courseId") ?: 0
             Log.d("navigation", "Course Id: $courseId")
-            if (courseId != null) {
-                CourseScreenNavigation(navController, courseId)
-            }
+
+            CourseScreenNavigation(navController, courseId)
+
         }
         composable(DashboardScreens.SessionScreen.route){
             SessionScreenNavigation(navController)

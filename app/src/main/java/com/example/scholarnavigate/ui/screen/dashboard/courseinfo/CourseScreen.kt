@@ -44,17 +44,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.scholarnavigate.data.module.Course
 import com.example.scholarnavigate.data.uimodule.CourseState
 import com.example.scholarnavigate.data.util.SnackBarEvent
 import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
-import com.example.scholarnavigate.sessions
-import com.example.scholarnavigate.tasks
 import com.example.scholarnavigate.ui.components.CountCard
 import com.example.scholarnavigate.ui.screen.dashboard.components.AddCourseDialog
 import com.example.scholarnavigate.ui.screen.dashboard.components.DeleteCourseDialog
@@ -62,7 +58,6 @@ import com.example.scholarnavigate.ui.screen.dashboard.components.studySessionsL
 import com.example.scholarnavigate.ui.screen.dashboard.components.todoTasksList
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import com.example.scholarnavigate.viewmodels.CourseViewModel
-import com.example.scholarnavigate.viewmodels.SessionViewModel
 import com.example.scholarnavigate.viewmodels.events.CourseEvent
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
