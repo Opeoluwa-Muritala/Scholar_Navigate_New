@@ -31,9 +31,7 @@ class CourseViewModel @Inject constructor(
     private val courseRepository: CourseRepository,
     private val sessionRepository: SessionRepository,
     private val taskRepository: TaskRepository,
-    private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
-    val courseId = savedStateHandle["courseId"] ?: 0
 
     // Get The Course Id in the View Model
 
@@ -158,13 +156,14 @@ class CourseViewModel @Inject constructor(
                     }
                 _snackbarEventFlow.emit(
                     SnackBarEvent.ShowSnackBar(
-                        "Course Updated Successfully",
+                        "Course Fetch Course",
                     )
                 )
             } catch (e: Exception){
                 _snackbarEventFlow.emit(
                     SnackBarEvent.ShowSnackBar(
-                        "Couldn't Update Course",
+                        "Couldn't Update Course ${e.message}",
+                        duration = SnackbarDuration.Long
                     )
                 )
             }
