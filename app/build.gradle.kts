@@ -88,8 +88,11 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     //fonts
-    implementation("androidx.compose.ui:ui-text-google-fonts:1.5.3")
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.6.7")
 
     //Desugaring
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
+
+    //Calender-Row
+    //implementation("io.github.ahmednader65:ComposeSingleRowCalender:1.0.1")
 }

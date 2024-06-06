@@ -1,5 +1,6 @@
 package com.example.scholarnavigate.viewmodels
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scholarnavigate.data.database.repositoryInterface.CourseRepository
@@ -23,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TaskViewModel @Inject constructor(
     private val taskRepository: TaskRepository,
-    private val courseRepository:CourseRepository
+    private val courseRepository:CourseRepository,
+    savedStateHandle: SavedStateHandle
 ): ViewModel() {
     private val _state = MutableStateFlow(TaskState())
     val state = combine(
@@ -131,6 +133,12 @@ class TaskViewModel @Inject constructor(
                     )
                 )
             }
+        }
+    }
+
+    private fun fetchTask(){
+        viewModelScope.launch{
+
         }
     }
 }

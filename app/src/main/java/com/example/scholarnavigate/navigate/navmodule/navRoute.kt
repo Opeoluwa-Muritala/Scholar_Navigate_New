@@ -8,5 +8,7 @@ sealed class AuthScreen(val route: String){
 sealed class DashboardScreens(val route:String){
     object SessionScreen: DashboardScreens("session")
     object TaskScreen: DashboardScreens("task")
-    object CourseScreen: DashboardScreens("course")
+    object CourseScreen: DashboardScreens("course/{courseId}"){
+        fun createCourse(courseId: Int) = "course/$courseId"
+    }
 }

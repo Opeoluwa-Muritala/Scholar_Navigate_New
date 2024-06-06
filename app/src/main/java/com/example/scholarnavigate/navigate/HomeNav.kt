@@ -1,7 +1,6 @@
 package com.example.scholarnavigate.navigate
 
 import android.util.Log
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -13,6 +12,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scholarnavigate.navigate.navmodule.BottomBarScreen
 import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
+import com.example.scholarnavigate.ui.screen.calendar.CalenderUi
 import com.example.scholarnavigate.ui.screen.dashboard.DashboardScreenNavigation
 import com.example.scholarnavigate.ui.screen.dashboard.courseinfo.CourseScreenNavigation
 import com.example.scholarnavigate.ui.screen.dashboard.createTask.TaskScreenNavigation
@@ -24,11 +24,8 @@ fun HomeNavGraph(navController: NavHostController = rememberNavController()){
         composable(BottomBarScreen.Dashboard.route){
             DashboardScreenNavigation(navController)
         }
-        composable(BottomBarScreen.Settings.route){
-            Text(text = "Settings")
-        }
-        composable(BottomBarScreen.Calender.route){
-            Text(text = "Calendar")
+        composable(BottomBarScreen.Calendar.route){
+            CalenderUi()
         }
         dashboardScreen(navController)
 
@@ -38,11 +35,15 @@ fun HomeNavGraph(navController: NavHostController = rememberNavController()){
 fun NavGraphBuilder.dashboardScreen(navController: NavHostController){
     navigation(route = Graph.DETAILS, startDestination = DashboardScreens.CourseScreen.route){
         composable(DashboardScreens.CourseScreen.route,
-        ){backStackEntry->
-            val courseId = backStackEntry.arguments?.getInt("courseId") ?: 0
-            Log.d("navigation", "Course Id: $courseId")
-
-            CourseScreenNavigation(navController, courseId)
+            arguments = listOf(
+                navArgument("courseId"){
+                    type = NavType.IntType
+                }
+            )
+        ){navbackstack ->
+            val courseId = navbackstack.arguments?.getInt("courseId") ?: 0
+            Log.d("courseId","CourseId: $courseId")
+            CourseScreenNavigation(navController)
 
         }
         composable(DashboardScreens.SessionScreen.route){

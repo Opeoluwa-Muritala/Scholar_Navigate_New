@@ -65,7 +65,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 
 @Composable
-fun CourseScreenNavigation(navController: NavController, courseId: Int?){
+fun CourseScreenNavigation(navController: NavController){
     val viewModel: CourseViewModel = hiltViewModel()
     val state by viewModel.state.collectAsState()
 
@@ -79,9 +79,8 @@ fun CourseScreenNavigation(navController: NavController, courseId: Int?){
         }
     }
 
-    Log.d("courseId", "Course ID: $courseId")
     CourseScreen(
-        state = state,
+        state = CourseState(),
         onEvent = viewModel::onEvent,
         snackBarEvent = viewModel.snackBarEvenFlow,
         onAddTaskButton = {navController.navigate(DashboardScreens.TaskScreen.route)},

@@ -79,7 +79,7 @@ fun DashboardScreenNavigation(navController: NavController){
         recentSession = recentSessions,
         snackBarEvent = viewModel.snackBarEvenFlow,
         onCourseCardClick = {
-            navController.navigate(DashboardScreens.CourseScreen.route)
+            navController.navigate(DashboardScreens.CourseScreen.createCourse(it ?: 0))
                             },
         onStartStudySessionButtonClick = {
             navController.navigate(DashboardScreens.SessionScreen.route)
