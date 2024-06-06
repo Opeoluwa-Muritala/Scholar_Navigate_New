@@ -80,12 +80,12 @@ fun CourseScreenNavigation(navController: NavController){
     }
 
     CourseScreen(
-        state = CourseState(),
+        state = state,
         onEvent = viewModel::onEvent,
         snackBarEvent = viewModel.snackBarEvenFlow,
         onAddTaskButton = {navController.navigate(DashboardScreens.TaskScreen.route)},
         onBackButtonClick = {navController.navigateUp()},
-        onTaskCardClick = {navController.navigate(DashboardScreens.TaskScreen.route)}
+        onTaskCardClick = {DashboardScreens.TaskScreen.createTask(courseId = 0, taskId = it ?: 1)}
     )
 }
 @OptIn(ExperimentalMaterial3Api::class)
@@ -179,7 +179,7 @@ private fun CourseScreen(
                     title = state.courseName,
                     onBackButtonClick = onBackButtonClick,
                     onDeleteButtonClick = { isDeleteCourseOpen = true },
-                    onEditButtonClick = {/*TODO*/},
+                    onEditButtonClick = {isAddSubjectDialogOpen = true},
                     scrollBehavior = scrollBehavior
                 )
             },

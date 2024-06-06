@@ -41,15 +41,22 @@ fun NavGraphBuilder.dashboardScreen(navController: NavHostController){
                 }
             )
         ){navbackstack ->
-            val courseId = navbackstack.arguments?.getInt("courseId") ?: 0
-            Log.d("courseId","CourseId: $courseId")
             CourseScreenNavigation(navController)
 
         }
         composable(DashboardScreens.SessionScreen.route){
             SessionScreenNavigation(navController)
         }
-        composable(DashboardScreens.TaskScreen.route){
+        composable(DashboardScreens.TaskScreen.route,
+            arguments = listOf(
+                navArgument("taskId"){
+                    type = NavType.IntType
+                },
+                navArgument("courseId"){
+                    type = NavType.IntType
+                }
+            )
+            ){
             TaskScreenNavigation(navController)
         }
     }

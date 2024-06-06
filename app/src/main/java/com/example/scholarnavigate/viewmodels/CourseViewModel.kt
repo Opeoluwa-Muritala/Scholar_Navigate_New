@@ -1,5 +1,6 @@
 package com.example.scholarnavigate.viewmodels
 
+import android.util.Log
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -36,11 +37,9 @@ class CourseViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val courseId:Int = savedStateHandle.get<Int>("courseId") ?: 1
-
+    private val courseId:Int = savedStateHandle["courseId"] ?: 1
 
     // Get The Course Id in the View Model
-
     private val _state = MutableStateFlow(CourseState())
     val state = combine(
         _state,
@@ -60,7 +59,6 @@ class CourseViewModel @Inject constructor(
         SharingStarted.WhileSubscribed(5000),
         CourseState()
     )
-
     init {
         fetchSubject()
     }
@@ -137,7 +135,6 @@ class CourseViewModel @Inject constructor(
                     )
                 }
 
-
             } catch (e: Exception){
                 _snackbarEventFlow.emit(
                     SnackBarEvent.ShowSnackBar("Couldn't Delete Course", duration =  SnackbarDuration.Long)
@@ -149,6 +146,7 @@ class CourseViewModel @Inject constructor(
     private fun fetchSubject(){
         viewModelScope.launch {
             try {
+
                 courseRepository
                     .getCourseById(courseId = courseId)?.let { course ->
                         _state.update {
@@ -162,7 +160,7 @@ class CourseViewModel @Inject constructor(
                     }
                 _snackbarEventFlow.emit(
                     SnackBarEvent.ShowSnackBar(
-                        "Course Fetch Course",
+                        "Course Fetch Successful",
                     )
                 )
             } catch (e: Exception){

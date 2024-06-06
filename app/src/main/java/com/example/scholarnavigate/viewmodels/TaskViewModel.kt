@@ -1,5 +1,7 @@
 package com.example.scholarnavigate.viewmodels
 
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,6 +9,7 @@ import com.example.scholarnavigate.data.database.repositoryInterface.CourseRepos
 import com.example.scholarnavigate.data.database.repositoryInterface.TaskRepository
 import com.example.scholarnavigate.data.module.Task
 import com.example.scholarnavigate.data.uimodule.TaskState
+import com.example.scholarnavigate.data.util.Priority
 import com.example.scholarnavigate.data.util.SnackBarEvent
 import com.example.scholarnavigate.viewmodels.events.TaskEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,6 +30,11 @@ class TaskViewModel @Inject constructor(
     private val courseRepository:CourseRepository,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
+
+    private val courseId:Int = savedStateHandle["courseId"] ?: 1
+    private val taskId:Int = savedStateHandle["taskId"] ?: 1
+
+
     private val _state = MutableStateFlow(TaskState())
     val state = combine(
         _state,
@@ -99,6 +107,8 @@ class TaskViewModel @Inject constructor(
 
     private val _snackbarEventFlow = MutableSharedFlow<SnackBarEvent>()
     val snackBarEvenFlow = _snackbarEventFlow.asSharedFlow()
+
+
     private fun saveTask() {
         val state = _state.value
 
@@ -138,7 +148,36 @@ class TaskViewModel @Inject constructor(
 
     private fun fetchTask(){
         viewModelScope.launch{
+            try {
 
+                taskRepository
+                    .getTaskById(taskId = taskId)?.let { task ->
+                        _state.update {
+                            it.copy(
+                                title = task.title,
+                                description = task.description,
+                                dueDate = task.dueDates,
+                                isTaskComplete = task.isComplete,
+                                priority = Priority.fromInt(task.priority),
+                                relatedToSubject = task.relatedCourses,
+                                currentTaskId = task.taskId,
+                                courseId = task.taskSubjectId
+                            )
+                        }
+                    }
+                _snackbarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar(
+                        "Task Fetch Successful",
+                    )
+                )
+            } catch (e: Exception){
+                _snackbarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar(
+                        "Couldn't Update Course ${e.message}",
+                        duration = SnackbarDuration.Long
+                    )
+                )
+            }
         }
     }
 }

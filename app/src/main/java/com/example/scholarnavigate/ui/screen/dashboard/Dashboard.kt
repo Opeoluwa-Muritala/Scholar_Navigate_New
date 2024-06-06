@@ -85,7 +85,7 @@ fun DashboardScreenNavigation(navController: NavController){
             navController.navigate(DashboardScreens.SessionScreen.route)
                                          },
         onTaskCardClick = {
-            navController.navigate(DashboardScreens.TaskScreen.route)
+            navController.navigate(DashboardScreens.TaskScreen.createTask(courseId = 0, taskId = it ?: 1))
         }
     )
 }
