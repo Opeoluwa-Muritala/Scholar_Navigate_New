@@ -46,3 +46,7 @@ sealed class SnackBarEvent {
 
     data object NavigateUp: SnackBarEvent()
 }
+
+fun Int.pad():String {
+    return this.toString().padStart(2,'0')
+}

@@ -302,7 +302,7 @@ private fun TaskScreenTopAppBar(
     onCheckBoxClick: () -> Unit
     ) {
     TopAppBar(
-        title = { Text(text = "Create Task") },
+        title = { Text(text = "Create/Edit Task") },
         navigationIcon = {
                          IconButton(onClick = onBackButtonClick) {
                              Icon(

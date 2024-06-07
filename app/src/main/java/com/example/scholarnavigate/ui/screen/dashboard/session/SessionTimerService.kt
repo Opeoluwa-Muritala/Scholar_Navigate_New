@@ -15,10 +15,14 @@ import com.example.scholarnavigate.data.util.Constants.ACTION_SERVICE_STOP
 import com.example.scholarnavigate.data.util.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.scholarnavigate.data.util.Constants.NOTIFICATION_CHANNEL_NAME
 import com.example.scholarnavigate.data.util.Constants.NOTIFICATION_ID
+import com.example.scholarnavigate.data.util.pad
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.Duration
+import kotlin.time.Duration
 import java.util.Timer
 import javax.inject.Inject
+import kotlin.concurrent.fixedRateTimer
+import kotlin.time.Duration.Companion.ZERO
+import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class SessionTimerService: Service() {
@@ -31,13 +35,14 @@ class SessionTimerService: Service() {
     private lateinit var timer: Timer
     var duration: Duration = Duration.ZERO
         private set
-    var seconds = mutableStateOf("00")
+    var second = mutableStateOf("00")
         private set
     var minutes = mutableStateOf("00")
         private set
     var hours = mutableStateOf("00")
         private set
-    val currentState = = mutableStateOf(TimerState.)
+    var currentState =  mutableStateOf(TimerState.IDLE)
+        private set
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -45,15 +50,20 @@ class SessionTimerService: Service() {
         intent?.action.let {
             when (it) {
                 ACTION_SERVICE_START -> {
-
+                    startForegroundService()
+                    startTimer { hours, minutes, seconds ->
+                        updateNotification(hours,minutes,seconds)
+                    }
                 }
 
                 ACTION_SERVICE_STOP -> {
-
+                    stopTimer()
                 }
 
                 ACTION_SERVICE_CANCEL -> {
-
+                    stopTimer()
+                    cancelTimer()
+                    startForegroundService()
                 }
             }
         }
@@ -66,30 +76,72 @@ class SessionTimerService: Service() {
         startForeground(
             NOTIFICATION_ID, notificationBuilder.build()
         )
+
     }
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel =
+            val timerchannel =
                 NotificationChannel(
                     NOTIFICATION_CHANNEL_ID,
                     NOTIFICATION_CHANNEL_NAME,
                     NotificationManager.IMPORTANCE_LOW
                 )
-            notificationManager.createNotificationChannel(channel)
+            notificationManager.createNotificationChannel(timerchannel)
         }
     }
 
-    private fun StartTimer(
-        onTick: (h: String, m: String, s: String) -> Unit
-    ) {
-
+    private fun updateNotification(h: String, m: String, s: String){
+        notificationManager.notify(
+            NOTIFICATION_ID,
+            notificationBuilder
+                .setContentText("$h:$m:$s")
+                .build()
+        )
     }
 
-    enum class TimerState(
-        IDLE,
-        STARTED
-        STOPPED
-    )
+    private fun stopForegroundService(){
+        notificationManager.cancel(NOTIFICATION_ID)
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        stopSelf()
+    }
+    private fun startTimer(
+        onTick: (h: String, m: String, s: String) -> Unit
+    ) {
+        currentState.value = TimerState.STARTED
+        timer = fixedRateTimer(initialDelay = 1000L, period = 1000L){
+            duration = duration.plus(1.seconds)
+            updateTimeMillis()
+            onTick(hours.value,minutes.value,second.value)
+        }
+    }
+
+    private fun stopTimer() {
+        if (this::timer.isInitialized){
+            timer.cancel()
+        }
+        currentState.value = TimerState.STOPPED
+    }
+
+    private fun cancelTimer(){
+        duration = ZERO
+        updateTimeMillis()
+        currentState.value = TimerState.IDLE
+    }
+
+    private fun updateTimeMillis(){
+        duration.toComponents{ hours, minutes, seconds ->
+            this@SessionTimerService.hours.value = hours.toInt().pad()
+            this@SessionTimerService.minutes.value = minutes.pad()
+            this@SessionTimerService.second.value = seconds.pad()
+        }
+    }
+
+
 }
 
+enum class TimerState{
+    IDLE,
+    STARTED,
+    STOPPED
+}
