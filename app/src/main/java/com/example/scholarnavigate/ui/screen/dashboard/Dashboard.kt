@@ -203,7 +203,7 @@ fun DashboardScreen(
                 todoTasksList(
                     sectionTitle = "UPCOMING TASKS",
                     tasks = tasks,
-                    onTaskCardCLick = {onTaskCardClick(it)},
+                    onTaskCardCLick = {onTaskCardClick(it.taskId)},
                     onCheckBoxClick = {
                         onEvent(DashBoardEvent.onTaskIsCompleteChange(it))
                     }

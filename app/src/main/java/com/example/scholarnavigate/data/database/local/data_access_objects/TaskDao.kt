@@ -21,9 +21,6 @@ interface TaskDao {
     @Query("SELECT * FROM Task WHERE taskId = :taskId")
     suspend fun getTaskById(taskId: Int) : Task?
 
-    @Query("SELECT * FROM Task WHERE dueDates = :dueDate")
-    fun getTaskByDate(dueDate: Long) : Flow<List<Task>>
-
     @Query("SELECT * FROM Task WHERE taskSubjectId = :courseId")
     fun getTasksForSubject(courseId: Int): Flow<List<Task>>
 

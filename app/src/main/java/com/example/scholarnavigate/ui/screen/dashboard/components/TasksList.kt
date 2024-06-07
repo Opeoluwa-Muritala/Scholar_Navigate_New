@@ -39,7 +39,7 @@ fun LazyListScope.todoTasksList(
     sectionTitle: String,
     tasks: List<Task>,
     emptyTaskList: String = "You don't have any upcoming task. \n Click the + button in the subject screen to add new task",
-    onTaskCardCLick: (Int?) -> Unit,
+    onTaskCardCLick: (Task) -> Unit,
     onCheckBoxClick: (Task) -> Unit
 ){
     item {
@@ -76,7 +76,7 @@ fun LazyListScope.todoTasksList(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
             task = task,
             onCheckBoxClick = {onCheckBoxClick(task)},
-            onClick = {onTaskCardCLick(task.taskId)}
+            onClick = {onTaskCardCLick(task)}
         )
 
     }

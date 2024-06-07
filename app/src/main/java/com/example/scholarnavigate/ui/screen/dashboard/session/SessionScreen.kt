@@ -29,12 +29,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.scholarnavigate.courses
 import com.example.scholarnavigate.data.module.Course
+import com.example.scholarnavigate.data.util.Constants.ACTION_SERVICE_CANCEL
+import com.example.scholarnavigate.data.util.Constants.ACTION_SERVICE_START
 import com.example.scholarnavigate.sessions
 import com.example.scholarnavigate.ui.screen.dashboard.components.DeleteCourseDialog
 import com.example.scholarnavigate.ui.screen.dashboard.components.SelectCourseField
@@ -55,6 +58,7 @@ fun SessionScreenNavigation(navController: NavController){
 private fun SessionScreen(
    onBackButtonClick: () -> Unit
 ) {
+    val context = LocalContext.current
     var isCourseFieldOpen by rememberSaveable {
         mutableStateOf(false)
     }
@@ -114,9 +118,13 @@ private fun SessionScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(12.dp),
-                        startButtonClick = { /*TODO*/ },
-                        cancelButtonClick = { /*TODO*/ },
-                        finishButtonClick = { }
+                        startButtonClick = {
+                            ServiceHelper.triggerForeGroundService(context, ACTION_SERVICE_START)
+                                           },
+                        cancelButtonClick = {
+                            ServiceHelper.triggerForeGroundService(context, ACTION_SERVICE_CANCEL)
+                        },
+                        finishButtonClick = {}
                     )
                 }
                 studySessionsList(

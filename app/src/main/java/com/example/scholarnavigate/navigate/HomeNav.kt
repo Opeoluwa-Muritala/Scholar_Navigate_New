@@ -25,7 +25,7 @@ fun HomeNavGraph(navController: NavHostController = rememberNavController()){
             DashboardScreenNavigation(navController)
         }
         composable(BottomBarScreen.Calendar.route){
-            CalenderUi()
+            CalenderUi(navController)
         }
         dashboardScreen(navController)
 

@@ -1,4 +1,4 @@
-package com.example.scholarnavigate.data.database.databasemodule
+package com.example.scholarnavigate.data.database.di
 
 import android.app.Application
 import androidx.room.Room

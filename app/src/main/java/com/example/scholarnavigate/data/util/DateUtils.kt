@@ -66,7 +66,7 @@ object DateUtils {
      * @return number of day in month, for example 15, 16, 17, etc...
      */
     fun getDayNumber(date: Date): String =
-        SimpleDateFormat("d", Locale.getDefault()).format(date)
+        SimpleDateFormat("dd", Locale.getDefault()).format(date)
 
     /**
      * @param date - which we want week number from

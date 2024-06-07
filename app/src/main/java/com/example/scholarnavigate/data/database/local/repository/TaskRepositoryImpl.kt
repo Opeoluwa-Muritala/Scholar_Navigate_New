@@ -20,11 +20,6 @@ class TaskRepositoryImpl @Inject constructor(
             .map { tasks -> sortTasks(tasks) }
     }
 
-    override fun getUpcomingTasksForCalendar(date: Long): Flow<List<Task>> {
-        return taskDao.getTaskByDate(date)
-            .map { tasks -> tasks.filter { it.isComplete.not() } }
-            .map { tasks -> sortTasks(tasks) }
-    }
 
     override fun getCompletedTasksForSubject(courseId: Int): Flow<List<Task>> {
         return taskDao.getTasksForSubject(courseId)

@@ -215,13 +215,13 @@ private fun CourseScreen(
                 todoTasksList(
                     sectionTitle = "UPCOMING TASKS",
                     tasks = state.upcomingTask,
-                    onTaskCardCLick = onTaskCardClick,
+                    onTaskCardCLick = { onTaskCardClick(it.taskId) },
                     onCheckBoxClick = {onEvent(CourseEvent.OnTaskIsCompleteChange(it)) }
                 )
                 todoTasksList(
                     sectionTitle = "COMPLETED TASKS",
                     tasks = state.completedTask,
-                    onTaskCardCLick = onTaskCardClick,
+                    onTaskCardCLick = { onTaskCardClick(it.taskId) },
                     onCheckBoxClick = {onEvent(CourseEvent.OnTaskIsCompleteChange(it))}
                 )
                 item {
