@@ -11,7 +11,6 @@ sealed class TaskEvent {
     data class OnRelatedCourseSelect(val course: Course): TaskEvent()
     data object OnIsCompleteChange: TaskEvent()
     data object SaveTask: TaskEvent()
-
     data object DeleteTask: TaskEvent()
 
 }

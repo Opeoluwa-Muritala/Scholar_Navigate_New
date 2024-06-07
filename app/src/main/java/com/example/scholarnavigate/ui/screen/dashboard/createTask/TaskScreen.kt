@@ -69,6 +69,17 @@ fun TaskScreenNavigation(navController: NavController){
     val viewModel: TaskViewModel = hiltViewModel()
     val state by viewModel.state.collectAsState()
 
+    LaunchedEffect(key1 = viewModel.snackBarEvenFlow){
+        viewModel.snackBarEvenFlow.collectLatest {
+            when (it){
+                is SnackBarEvent.NavigateUp -> navController.navigateUp()
+                else -> {}
+            }
+
+        }
+    }
+
+
     TaskScreen(
         state = state,
         onEvent = viewModel::OnEvent,
@@ -112,9 +123,7 @@ private fun TaskScreen(
     var isCourseFieldOpen by rememberSaveable {
         mutableStateOf(false)
     }
-    var courseFieldText by rememberSaveable {
-        mutableStateOf<Course?>(null)
-    }
+
 
 
 
@@ -164,12 +173,11 @@ private fun TaskScreen(
                 TaskScreenTopAppBar(
                     isTaskExist = state.currentTaskId != null,
                     isTaskComplete = state.isTaskComplete,
-                    checkBoxBorderColor = Red,
+                    checkBoxBorderColor = state.priority.color,
                     onBackButtonClick = onBackButtonClick,
                     onDeleteButtonClick = {
-                        onEvent(TaskEvent.DeleteTask)
                         isDeleteTask = true },
-                    onCheckBoxClick = {}
+                    onCheckBoxClick = {onEvent(TaskEvent.OnIsCompleteChange)}
                     )
             }
         ) {paddingValues ->

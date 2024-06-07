@@ -42,8 +42,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.NavController
 import com.example.scholarnavigate.R
 import com.example.scholarnavigate.data.module.Course
@@ -152,7 +150,7 @@ fun DashboardScreen(
                     "by this time. This action cannot be undone",
             onConfirmButtonClick = {
                 isDeleteDialogOpen = false
-                onEvent(DashBoardEvent.DeleteCourse)
+                onEvent(DashBoardEvent.DeleteSession)
                                    },
             isOpen = isDeleteDialogOpen
         )

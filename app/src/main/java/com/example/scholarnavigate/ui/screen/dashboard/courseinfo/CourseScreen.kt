@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.scholarnavigate.data.uimodule.CourseState
 import com.example.scholarnavigate.data.util.SnackBarEvent
 import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
@@ -68,6 +69,8 @@ import kotlinx.coroutines.flow.collectLatest
 fun CourseScreenNavigation(navController: NavController){
     val viewModel: CourseViewModel = hiltViewModel()
     val state by viewModel.state.collectAsState()
+    val navBackstackEntry by navController.currentBackStackEntryAsState()
+    val courseId = navBackstackEntry?.arguments?.getInt("courseId", 1)
 
     LaunchedEffect(key1 = viewModel.snackBarEvenFlow){
         viewModel.snackBarEvenFlow.collectLatest {
@@ -83,9 +86,9 @@ fun CourseScreenNavigation(navController: NavController){
         state = state,
         onEvent = viewModel::onEvent,
         snackBarEvent = viewModel.snackBarEvenFlow,
-        onAddTaskButton = {navController.navigate(DashboardScreens.TaskScreen.route)},
+        onAddTaskButton = {navController.navigate(DashboardScreens.TaskScreen.createTask(0, courseId ?:1))},
         onBackButtonClick = {navController.navigateUp()},
-        onTaskCardClick = {DashboardScreens.TaskScreen.createTask(courseId = 0, taskId = it ?: 1)}
+        onTaskCardClick = {navController.navigate(DashboardScreens.TaskScreen.createTask(courseId = courseId ?: 1, taskId = it ?: 1))}
     )
 }
 @OptIn(ExperimentalMaterial3Api::class)

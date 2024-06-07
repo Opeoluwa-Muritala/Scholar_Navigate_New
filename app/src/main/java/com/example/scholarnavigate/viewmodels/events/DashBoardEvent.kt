@@ -7,7 +7,7 @@ import com.example.scholarnavigate.data.module.Task
 sealed class DashBoardEvent {
     data object SaveCourse : DashBoardEvent()
 
-    data object DeleteCourse: DashBoardEvent()
+    data object DeleteSession: DashBoardEvent()
 
     data class onDeleteSessionButtonClick(val session: Session): DashBoardEvent()
 

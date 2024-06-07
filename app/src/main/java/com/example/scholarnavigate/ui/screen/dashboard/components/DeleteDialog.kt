@@ -55,14 +55,14 @@ fun DeleteCourseDialog(
             text = { Text(text = body)},
             confirmButton = {
                 TextButton(
-                    onClick = onDissmisRequest,
+                    onClick = onConfirmButtonClick,
                 ) {
                     Text(text = "Delete")
                 }
             },
             dismissButton = {
                 TextButton(
-                    onClick = onConfirmButtonClick,
+                    onClick = onDissmisRequest,
                 ) {
                     Text(text = "Cancel")
                 }

@@ -1,7 +1,6 @@
 package com.example.scholarnavigate.viewmodels
 
 import androidx.compose.material3.SnackbarDuration
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,6 +12,7 @@ import com.example.scholarnavigate.data.util.Priority
 import com.example.scholarnavigate.data.util.SnackBarEvent
 import com.example.scholarnavigate.viewmodels.events.TaskEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.Instant
 import javax.inject.Inject
 
@@ -31,8 +32,8 @@ class TaskViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val courseId:Int = savedStateHandle["courseId"] ?: 1
-    private val taskId:Int = savedStateHandle["taskId"] ?: 1
+    private val courseId:Int? = savedStateHandle["courseId"]
+    private val taskId:Int? = savedStateHandle["taskId"]
 
 
     private val _state = MutableStateFlow(TaskState())
@@ -48,6 +49,11 @@ class TaskViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = TaskState()
     )
+
+    init {
+        fetchTask()
+        fetchCourse()
+    }
 
     fun OnEvent(event: TaskEvent) {
         when (event) {
@@ -70,7 +76,7 @@ class TaskViewModel @Inject constructor(
             TaskEvent.OnIsCompleteChange -> {
                 _state.update {
                     it.copy(
-                        isTaskComplete = !_state.value.isTaskComplete
+                        isTaskComplete = !state.value.isTaskComplete
                     )
                 }
             }
@@ -101,22 +107,24 @@ class TaskViewModel @Inject constructor(
             }
 
             TaskEvent.SaveTask -> saveTask()
-            TaskEvent.DeleteTask -> TODO()
+            TaskEvent.DeleteTask -> deleteTask()
         }
     }
 
     private val _snackbarEventFlow = MutableSharedFlow<SnackBarEvent>()
     val snackBarEvenFlow = _snackbarEventFlow.asSharedFlow()
 
-
     private fun saveTask() {
         val state = _state.value
-
-
-
         viewModelScope.launch {
             try {
                 if (state.relatedToSubject == null || state.courseId == null) {
+                    _snackbarEventFlow.emit(
+                        SnackBarEvent.ShowSnackBar(
+                            "Please Fill In All Fields",
+                            duration = SnackbarDuration.Long
+                        )
+                    )
                     return@launch
                 }
                 taskRepository.upsertTask(
@@ -149,33 +157,109 @@ class TaskViewModel @Inject constructor(
     private fun fetchTask(){
         viewModelScope.launch{
             try {
-
-                taskRepository
-                    .getTaskById(taskId = taskId)?.let { task ->
-                        _state.update {
-                            it.copy(
-                                title = task.title,
-                                description = task.description,
-                                dueDate = task.dueDates,
-                                isTaskComplete = task.isComplete,
-                                priority = Priority.fromInt(task.priority),
-                                relatedToSubject = task.relatedCourses,
-                                currentTaskId = task.taskId,
-                                courseId = task.taskSubjectId
+                if (courseId != null && taskId != null) {
+                    taskRepository
+                        .getTaskById(taskId = taskId)?.let { task ->
+                            _state.update {
+                                it.copy(
+                                    title = task.title,
+                                    description = task.description,
+                                    dueDate = task.dueDates,
+                                    isTaskComplete = task.isComplete,
+                                    priority = Priority.fromInt(task.priority),
+                                    relatedToSubject = task.relatedCourses,
+                                    currentTaskId = task.taskId,
+                                    courseId = task.taskSubjectId
+                                )
+                            }
+                            _snackbarEventFlow.emit(
+                                SnackBarEvent.ShowSnackBar(
+                                    "Task Fetch Successful",
+                                )
                             )
                         }
+                } else {
+                    val state = state.value
+                    _state.update {
+                        it.copy(
+                            title = state.title,
+                            description = state.description,
+                            dueDate = state.dueDate,
+                            isTaskComplete = state.isTaskComplete,
+                            priority = state.priority,
+                            relatedToSubject = state.relatedToSubject,
+                            currentTaskId = state.currentTaskId,
+                            courseId = state.courseId
+                        )
                     }
-                _snackbarEventFlow.emit(
-                    SnackBarEvent.ShowSnackBar(
-                        "Task Fetch Successful",
+                    _snackbarEventFlow.emit(
+                        SnackBarEvent.ShowSnackBar(
+                            "Task Not Found",
+                        )
                     )
-                )
+                }
             } catch (e: Exception){
                 _snackbarEventFlow.emit(
                     SnackBarEvent.ShowSnackBar(
-                        "Couldn't Update Course ${e.message}",
+                        "Couldn't Update Task ${e.message}",
                         duration = SnackbarDuration.Long
                     )
+                )
+            }
+        }
+    }
+
+    private fun fetchCourse(){
+        viewModelScope.launch {
+            try {
+                    courseRepository.getCourseById(courseId ?: 1)?.let { course ->
+                        _state.update {
+                            it.copy(
+                                relatedToSubject = course.name,
+                                courseId = course.courseId
+                            )
+                        }
+                    }
+
+
+            } catch (e: Exception) {
+                _snackbarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar(
+                        "Couldn't Find Related Subject ${e.message}",
+                        duration = SnackbarDuration.Long
+                    )
+                )
+            }
+        }
+    }
+
+    private fun deleteTask(){
+        viewModelScope.launch {
+            try {
+                val currentTaskId =  state.value.currentTaskId
+                if (currentTaskId != null){
+                    withContext(Dispatchers.IO){
+                        taskRepository.deleteTask(currentTaskId)
+                    }
+
+                    _snackbarEventFlow.emit(
+                        SnackBarEvent.ShowSnackBar("Course Deleted Successfully")
+                    )
+                    _snackbarEventFlow.emit(
+                        SnackBarEvent.NavigateUp
+                    )
+                } else {
+                    _snackbarEventFlow.emit(
+                        SnackBarEvent.ShowSnackBar(" No Course To Delete")
+                    )
+                    _snackbarEventFlow.emit(
+                        SnackBarEvent.NavigateUp
+                    )
+                }
+
+            } catch (e: Exception){
+                _snackbarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar("Couldn't Delete Course", duration =  SnackbarDuration.Long)
                 )
             }
         }

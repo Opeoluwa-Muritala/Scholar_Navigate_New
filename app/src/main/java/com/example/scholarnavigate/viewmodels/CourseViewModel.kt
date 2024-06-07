@@ -65,8 +65,7 @@ class CourseViewModel @Inject constructor(
 
     fun onEvent(event: CourseEvent){
         when(event){
-            CourseEvent.DeleteCourse -> DeleteCourse()
-            CourseEvent.DeleteSession -> TODO()
+            CourseEvent.DeleteCourse -> deleteCourse()
             is CourseEvent.OnCourseCardColorChange -> {
                 _state.update {
                     it.copy(courseCardColors = event.colors)
@@ -77,13 +76,11 @@ class CourseViewModel @Inject constructor(
                     it.copy(courseName = event.name)
                 }
             }
-            is CourseEvent.OnDeleteSessionButtonClick -> TODO()
             is CourseEvent.OnGoalStudyHoursChange -> {
                 _state.update {
                     it.copy(goalStudyHours = event.hours)
                 }
             }
-            is CourseEvent.OnTaskIsCompleteChange -> TODO()
             is CourseEvent.UpdateSubject -> updateCourse()
             is CourseEvent.UpdateProgress -> {
                 val goalStudyHours = state.value.goalStudyHours.toFloatOrNull() ?: 1f
@@ -93,6 +90,15 @@ class CourseViewModel @Inject constructor(
                     )
                 }
             }
+            is CourseEvent.OnTaskIsCompleteChange -> {
+                viewModelScope.launch {
+                    taskRepository.upsertTask(
+                        event.task.copy(isComplete = !event.task.isComplete)
+                    )
+                }
+            }
+            is CourseEvent.OnDeleteSessionButtonClick -> TODO()
+            CourseEvent.DeleteSession -> TODO()
         }
     }
 
@@ -111,7 +117,7 @@ class CourseViewModel @Inject constructor(
         }
     }
 
-    private fun DeleteCourse(){
+    private fun deleteCourse(){
         viewModelScope.launch {
             try {
                 val currentCourseId =  state.value.currentCourseId
@@ -170,8 +176,14 @@ class CourseViewModel @Inject constructor(
                         duration = SnackbarDuration.Long
                     )
                 )
+            } catch (e: NullPointerException){
+                _snackbarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar(
+                        "Couldn't Update Course ${e.message}",
+                        duration = SnackbarDuration.Long
+                    )
+                )
             }
-            }
-
+        }
     }
 }

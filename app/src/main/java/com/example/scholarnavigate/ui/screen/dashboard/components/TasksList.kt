@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scholarnavigate.R
 import com.example.scholarnavigate.data.module.Task
 import com.example.scholarnavigate.data.util.Priority
+import com.example.scholarnavigate.data.util.changeMillisToDateString
 import com.example.scholarnavigate.ui.theme.onPrimaryDark
 import com.example.scholarnavigate.ui.theme.onPrimaryLight
 import com.example.scholarnavigate.ui.theme.primaryContainerDark
@@ -120,7 +121,7 @@ private fun TaskCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "${task.dueDates}",
+                    text = task.dueDates.changeMillisToDateString(),
                     style = MaterialTheme.typography.bodySmall,
                 )
             }

@@ -23,34 +23,37 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scholarnavigate.R
+import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 
 @Composable
 fun GoogleSignIn(
     onClick: () -> Unit
 ) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White
-        ),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 9.dp
-        ),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.padding(5.dp)
+    ScholarNavigateTheme {
+        Button(
+            onClick = onClick,
+            elevation = ButtonDefaults.buttonElevation(
+                defaultElevation = 9.dp
+            ),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.googlelogo),
-                contentDescription = " Login",
-                modifier = Modifier.size(30.dp)
-            )
-            Spacer(Modifier.width(10.dp))
-            Text("Login With Google Account", color = Color.Black, style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.padding(5.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.googlelogo),
+                    contentDescription = " Login",
+                    modifier = Modifier.size(30.dp)
+                )
+                Spacer(Modifier.width(10.dp))
+                Text(
+                    "Login With Google Account",
+                    color = Color.Black,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp)
+                )
+            }
         }
-
     }
 }

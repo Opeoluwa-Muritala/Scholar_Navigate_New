@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -31,7 +33,9 @@ import com.example.scholarnavigate.navigate.navmodule.AuthScreen
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import com.example.scholarnavigate.ui.theme.primaryDark
 import com.example.scholarnavigate.ui.theme.primaryLight
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 @Composable
 fun AnimatedSplashScreen(navController: NavController) {
@@ -46,14 +50,15 @@ fun AnimatedSplashScreen(navController: NavController) {
     )
     LaunchedEffect(key1 = true){
         startAnimation = true
-        delay(1000)
+        delay(500)
         startAnimation = false
-        delay(1000)
+        delay(500)
         startAnimation = true
-        delay(1000)
-        navController.navigate(AuthScreen.Login.route){
-            popUpToRoute
+        delay(2000)
+        withContext(Dispatchers.Main){
+            navController.popBackStack()
         }
+        navController.navigate(AuthScreen.Login.route)
 
     }
     Splash(alphaAnim.value)
@@ -65,13 +70,19 @@ fun Splash(alpha:Float) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .alpha(alpha),
+                .background(
+                    if (isSystemInDarkTheme()) primaryLight else MaterialTheme.colorScheme.inversePrimary
+                ),
             contentAlignment = Alignment.Center
         ){
             Image(
-                modifier = Modifier.size(300.dp),
+                modifier = Modifier
+                    .size(300.dp)
+                    .alpha(alpha)
+                ,
                 painter = painterResource(id = R.drawable.applogo),
                 contentDescription = "Scholar Navigate",
+                colorFilter = ColorFilter.tint( if (isSystemInDarkTheme()) Color.White else Color.Blue)
             )
         }
     }

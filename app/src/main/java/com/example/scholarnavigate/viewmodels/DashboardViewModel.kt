@@ -72,7 +72,6 @@ class DashboardViewModel @Inject constructor(
 
     fun onEvent(event: DashBoardEvent){
         when (event) {
-            is DashBoardEvent.DeleteCourse -> TODO()
             is DashBoardEvent.SaveCourse -> saveCourse()
             is DashBoardEvent.onCourseCardColorChange -> {
                 _state.update {
@@ -102,7 +101,14 @@ class DashboardViewModel @Inject constructor(
                     )
                 }
             }
-            is DashBoardEvent.onTaskIsCompleteChange -> TODO()
+            is DashBoardEvent.DeleteSession -> TODO()
+            is DashBoardEvent.onTaskIsCompleteChange -> {
+                viewModelScope.launch {
+                    taskRepository.upsertTask(
+                        event.task.copy(isComplete = !event.task.isComplete)
+                    )
+                }
+            }
         }
     }
 
