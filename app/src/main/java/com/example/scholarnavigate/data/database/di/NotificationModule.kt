@@ -1,11 +1,15 @@
 package com.example.scholarnavigate.data.database.di
 
 import android.app.Notification
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
 import com.example.scholarnavigate.R
+import com.example.scholarnavigate.data.util.Constants
 import com.example.scholarnavigate.data.util.Constants.NOTIFICATION_CHANNEL_ID
 import dagger.Module
 import dagger.Provides
@@ -28,6 +32,7 @@ object NotificationModule {
             .setContentTitle("Scholar Navigate")
             .setContentText("00:00:00")
             .setSmallIcon(R.drawable.applogo)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setOngoing(true)
     }
 
@@ -35,7 +40,17 @@ object NotificationModule {
     @Provides
     fun provideNotificationManager(
         @ApplicationContext context: Context
-    ) : NotificationManager {
-        return context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    ) : NotificationManagerCompat {
+        val notificationManager = NotificationManagerCompat.from(context)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel =
+                NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID,
+                    Constants.NOTIFICATION_CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_HIGH
+                )
+            notificationManager.createNotificationChannel(channel)
+            }
+        return notificationManager
     }
 }

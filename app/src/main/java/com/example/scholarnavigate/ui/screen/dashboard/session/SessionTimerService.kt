@@ -7,20 +7,22 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.example.scholarnavigate.data.util.Constants.ACTION_SERVICE_CANCEL
 import com.example.scholarnavigate.data.util.Constants.ACTION_SERVICE_START
 import com.example.scholarnavigate.data.util.Constants.ACTION_SERVICE_STOP
-import com.example.scholarnavigate.data.util.Constants.NOTIFICATION_CHANNEL_ID
-import com.example.scholarnavigate.data.util.Constants.NOTIFICATION_CHANNEL_NAME
-import com.example.scholarnavigate.data.util.Constants.NOTIFICATION_ID
+import com.example.scholarnavigate.data.util.Constants.TIMER_CHANNEL_ID
+import com.example.scholarnavigate.data.util.Constants.TIMER_CHANNEL_NAME
+import com.example.scholarnavigate.data.util.Constants.TIMER_ID
 import com.example.scholarnavigate.data.util.pad
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.time.Duration
 import java.util.Timer
 import javax.inject.Inject
 import kotlin.concurrent.fixedRateTimer
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.seconds
 
@@ -28,12 +30,13 @@ import kotlin.time.Duration.Companion.seconds
 class SessionTimerService: Service() {
 
     @Inject
-    lateinit var notificationManager: NotificationManager
+    lateinit var notificationManager: NotificationManagerCompat
 
     @Inject
     lateinit var notificationBuilder: NotificationCompat.Builder
+    
     private lateinit var timer: Timer
-    var duration: Duration = Duration.ZERO
+    var duration: Duration = ZERO
         private set
     var second = mutableStateOf("00")
         private set
@@ -52,7 +55,7 @@ class SessionTimerService: Service() {
                 ACTION_SERVICE_START -> {
                     startForegroundService()
                     startTimer { hours, minutes, seconds ->
-                        updateNotification(hours,minutes,seconds)
+                        updateNotification(seconds,hours,minutes)
                     }
                 }
 
@@ -63,37 +66,37 @@ class SessionTimerService: Service() {
                 ACTION_SERVICE_CANCEL -> {
                     stopTimer()
                     cancelTimer()
-                    startForegroundService()
+                    stopForegroundService()
+                    stopSelf()
                 }
             }
         }
         return super.onStartCommand(intent, flags, startId)
     }
 
-    @SuppressLint("ForegroundServiceType")
     private fun startForegroundService() {
         createNotificationChannel()
         startForeground(
-            NOTIFICATION_ID, notificationBuilder.build()
+            TIMER_ID, notificationBuilder.build()
         )
-
     }
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val timerchannel =
+            val channel =
                 NotificationChannel(
-                    NOTIFICATION_CHANNEL_ID,
-                    NOTIFICATION_CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_LOW
+                    TIMER_CHANNEL_ID,
+                    TIMER_CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_HIGH
                 )
-            notificationManager.createNotificationChannel(timerchannel)
+            notificationManager.createNotificationChannel(channel)
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun updateNotification(h: String, m: String, s: String){
         notificationManager.notify(
-            NOTIFICATION_ID,
+            TIMER_ID,
             notificationBuilder
                 .setContentText("$h:$m:$s")
                 .build()
@@ -101,7 +104,7 @@ class SessionTimerService: Service() {
     }
 
     private fun stopForegroundService(){
-        notificationManager.cancel(NOTIFICATION_ID)
+        notificationManager.cancel(TIMER_ID)
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }

@@ -55,7 +55,7 @@ fun NavGraphBuilder.dashboardScreen(navController: NavHostController){
                 navArgument("courseId"){
                     type = NavType.IntType
                 }
-            )
+            ),
             ){
             TaskScreenNavigation(navController)
         }

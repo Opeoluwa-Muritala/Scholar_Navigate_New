@@ -1,14 +1,31 @@
 package com.example.scholarnavigate
 
+import android.Manifest
+import android.app.NotificationManager
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.toArgb
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
+import com.example.scholarnavigate.R.*
 import com.example.scholarnavigate.data.module.Course
 import com.example.scholarnavigate.data.module.Session
 import com.example.scholarnavigate.data.module.Task
+import com.example.scholarnavigate.data.util.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.scholarnavigate.navigate.RootNavigationGraph
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,118 +35,47 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            var hasNotificationPermission by remember {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    mutableStateOf(
+                        ContextCompat.checkSelfPermission(
+                            applicationContext,
+                            Manifest.permission.POST_NOTIFICATIONS
+                        ) == PackageManager.PERMISSION_GRANTED
+                    )
+                } else mutableStateOf(true)
+            }
+
+            val permissionLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestPermission(),
+                onResult = { isGranted ->
+                    hasNotificationPermission = isGranted
+                    if (!isGranted){
+                        shouldShowRequestPermissionRationale("Kindly Enable the Notification " +
+                                "Permission. This is necessary for " +
+                                "you to receive todo notifications and for the sessions timer")
+                    }
+
+                }
+            )
+
+            LaunchedEffect(key1 = true,){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+                if (!hasNotificationPermission){
+                    Toast.makeText(
+                        applicationContext,
+                        "Please enable Notification Permission in your settings",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+
             ScholarNavigateTheme(darkTheme = isSystemInDarkTheme()) {
                 RootNavigationGraph(navController = rememberNavController())
             }
         }
     }
+
 }
-
-
-val courses = listOf(
-    Course("MAT 412", 2f, Course.subjectCardColors[0].map { it.toArgb() }, 0),
-    Course("CHM 404", 10f, Course.subjectCardColors[1].map { it.toArgb() }, 0),
-    Course("PHY 402", 6f, Course.subjectCardColors[2].map { it.toArgb() }, 0),
-    Course("STA 410", 8f, Course.subjectCardColors[3].map { it.toArgb() }, 0),
-    Course("GNS 424", 2f, Course.subjectCardColors[4].map { it.toArgb() }, 0),
-)
-
-val tasks = listOf(
-    Task(
-        "Prepare Notes",
-        "",
-        0L,
-        1,
-        relatedCourses = "",
-        isComplete = false,
-        taskId = 0,
-        taskSubjectId = 0
-    ),
-    Task(
-        "Go to Lecture",
-        "",
-        0L,
-        2,
-        relatedCourses = "",
-        isComplete = true,
-        taskId = 0,
-        taskSubjectId = 0
-    ),
-    Task(
-        "Read The Lecturer Material On Mat",
-        "",
-        10L,
-        0,
-        relatedCourses = "",
-        isComplete = false,
-        taskId = 0,
-        taskSubjectId = 0
-    ),
-    Task(
-        "Go For Tutorials",
-        "",
-        10L,
-        2,
-        relatedCourses = "",
-        isComplete = true,
-        taskId = 0,
-        taskSubjectId = 0
-    ),
-    Task(
-        "Submit Assignments",
-        "",
-        10L,
-        1,
-        relatedCourses = "",
-        isComplete = false,
-        taskId = 0,
-        taskSubjectId = 0
-    ),
-    Task(
-        "Lorem Ipsum LaLam hardy jhg  retread g druthers k g utf ggmap dtd,h,gkg after ej " +
-                "mg,sited proj gkf",
-        "",
-        10L,
-        1,
-        relatedCourses = "",
-        isComplete = false,
-        taskId = 0,
-        taskSubjectId = 0
-    )
-
-)
-
-val sessions = listOf(
-    Session(
-        sessionSubjectId = 0,
-        relatedToSubect = "CHE",
-        date = 0L,
-        duration = 2L,
-        sessionId = 0
-    ),
-    Session(
-        sessionSubjectId = 0,
-        relatedToSubect = "MAT",
-        date = 0L,
-        duration = 2L,
-        sessionId = 0
-    ),
-    Session(
-        sessionSubjectId = 0,
-        relatedToSubect = "PHY",
-        date = 0L,
-        duration = 2L,
-        sessionId = 0
-    ),
-    Session(
-        sessionSubjectId = 0,
-        relatedToSubect = "CSC",
-        date = 0L,
-        duration = 2L,
-        sessionId = 0
-    )
-)
-
-
-
-

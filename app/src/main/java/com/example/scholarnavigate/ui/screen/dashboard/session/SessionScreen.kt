@@ -34,11 +34,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.scholarnavigate.courses
 import com.example.scholarnavigate.data.module.Course
 import com.example.scholarnavigate.data.util.Constants.ACTION_SERVICE_CANCEL
 import com.example.scholarnavigate.data.util.Constants.ACTION_SERVICE_START
-import com.example.scholarnavigate.sessions
 import com.example.scholarnavigate.ui.screen.dashboard.components.DeleteCourseDialog
 import com.example.scholarnavigate.ui.screen.dashboard.components.SelectCourseField
 import com.example.scholarnavigate.ui.screen.dashboard.components.studySessionsList
@@ -103,7 +101,7 @@ private fun SessionScreen(
                             .fillMaxWidth()
                             .padding(12.dp),
                         isOpen = isCourseFieldOpen,
-                        courses = courses,
+                        courses = emptyList(),
                         onCourseClicked = { course ->
                             courseFieldText = course
                             isCourseFieldOpen = false
@@ -129,7 +127,7 @@ private fun SessionScreen(
                 }
                 studySessionsList(
                     sectionTitle = "SIMILAR SESSIONS HISTORY",
-                    sessions = sessions,
+                    sessions = emptyList(),
                     onDeleteClick = { isDeleteDialogOpen = true }
                 )
             }

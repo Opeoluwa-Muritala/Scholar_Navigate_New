@@ -1,5 +1,11 @@
 package com.example.scholarnavigate.ui.screen.splash
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateOffsetAsState
 import androidx.compose.animation.core.tween
@@ -24,11 +30,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.getSystemService
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.scholarnavigate.R
+import com.example.scholarnavigate.data.util.Constants
+import com.example.scholarnavigate.data.util.Constants.NOTIFICATION_ID
 import com.example.scholarnavigate.navigate.navmodule.AuthScreen
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import com.example.scholarnavigate.ui.theme.primaryDark
@@ -48,6 +62,8 @@ fun AnimatedSplashScreen(navController: NavController) {
             2000
         ), label = ""
     )
+    val context =LocalContext.current
+
     LaunchedEffect(key1 = true){
         startAnimation = true
         delay(500)
@@ -55,13 +71,44 @@ fun AnimatedSplashScreen(navController: NavController) {
         delay(500)
         startAnimation = true
         delay(2000)
+
         withContext(Dispatchers.Main){
             navController.popBackStack()
         }
         navController.navigate(AuthScreen.Login.route)
-
+        showNotification(context = context)
     }
     Splash(alphaAnim.value)
+}
+
+
+private fun showNotification(context: Context){
+
+    val notificationManager = NotificationManagerCompat.from(context)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val channel =
+            NotificationChannel(
+                Constants.NOTIFICATION_CHANNEL_ID,
+                Constants.NOTIFICATION_CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_HIGH
+            )
+        notificationManager.createNotificationChannel(channel)
+    }
+    val notification = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID)
+        .setContentTitle("Welcome To Scholar Navigate")
+        .setContentText("Bring Out The Scholar Within You With A Study Session")
+        .setSmallIcon(R.drawable.applogo)
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
+        .build()
+
+    if (ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
+        return
+    }
+    notificationManager.notify(NOTIFICATION_ID, notification)
 }
 
 @Composable
