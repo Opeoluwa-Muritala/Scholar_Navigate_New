@@ -2,10 +2,14 @@ package com.example.scholarnavigate
 
 import android.Manifest
 import android.app.NotificationManager
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -27,11 +31,28 @@ import com.example.scholarnavigate.data.module.Session
 import com.example.scholarnavigate.data.module.Task
 import com.example.scholarnavigate.data.util.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.scholarnavigate.navigate.RootNavigationGraph
+import com.example.scholarnavigate.ui.screen.dashboard.session.SessionTimerService
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private var isBound by mutableStateOf(false)
+    private lateinit var timerService: SessionTimerService
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as SessionTimerService.StudySessionTimerBinder
+            timerService = binder.getService()
+            isBound = true
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            isBound = false
+        }
+    }
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -71,11 +92,24 @@ class MainActivity : ComponentActivity() {
                     ).show()
                 }
             }
-
-            ScholarNavigateTheme(darkTheme = isSystemInDarkTheme()) {
-                RootNavigationGraph(navController = rememberNavController())
+            if (isBound){
+                ScholarNavigateTheme(darkTheme = isSystemInDarkTheme()) {
+                    RootNavigationGraph(navController = rememberNavController(), timerService)
+                }
             }
+
         }
+    }
+    override fun onStart(){
+        super.onStart()
+        Intent(this, SessionTimerService::class.java).also { intent ->
+            bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        }
+    }
+    override fun onStop(){
+        super.onStop()
+        unbindService(connection)
+        isBound = false
     }
 
 }

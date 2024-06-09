@@ -5,9 +5,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.scholarnavigate.ui.screen.dashboard.HomeScreen
+import com.example.scholarnavigate.ui.screen.dashboard.session.SessionTimerService
 
 @Composable
-fun RootNavigationGraph(navController: NavHostController) {
+fun RootNavigationGraph(navController: NavHostController, timerService: SessionTimerService) {
     NavHost(
         navController = navController,
         route = Graph.ROOT,
@@ -15,7 +16,7 @@ fun RootNavigationGraph(navController: NavHostController) {
     ){
         authNavGraph(navController)
         composable(Graph.HOME){
-            HomeScreen()
+            HomeScreen(timerService = timerService)
         }
     }
 }

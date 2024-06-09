@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
+import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
@@ -29,6 +30,8 @@ import kotlin.time.Duration.Companion.seconds
 @AndroidEntryPoint
 class SessionTimerService: Service() {
 
+    val binder = StudySessionTimerBinder()
+
     @Inject
     lateinit var notificationManager: NotificationManagerCompat
 
@@ -47,7 +50,7 @@ class SessionTimerService: Service() {
     var currentState =  mutableStateOf(TimerState.IDLE)
         private set
 
-    override fun onBind(intent: Intent?): IBinder? = null
+    override fun onBind(intent: Intent?): IBinder? = binder
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.action.let {
@@ -55,7 +58,7 @@ class SessionTimerService: Service() {
                 ACTION_SERVICE_START -> {
                     startForegroundService()
                     startTimer { hours, minutes, seconds ->
-                        updateNotification(seconds,hours,minutes)
+                        updateNotification(hours,minutes,seconds)
                     }
                 }
 
@@ -67,13 +70,13 @@ class SessionTimerService: Service() {
                     stopTimer()
                     cancelTimer()
                     stopForegroundService()
-                    stopSelf()
                 }
             }
         }
         return super.onStartCommand(intent, flags, startId)
     }
 
+    @SuppressLint("ForegroundServiceType")
     private fun startForegroundService() {
         createNotificationChannel()
         startForeground(
@@ -122,6 +125,7 @@ class SessionTimerService: Service() {
     private fun stopTimer() {
         if (this::timer.isInitialized){
             timer.cancel()
+             timer.purge()
         }
         currentState.value = TimerState.STOPPED
     }
@@ -133,13 +137,16 @@ class SessionTimerService: Service() {
     }
 
     private fun updateTimeMillis(){
-        duration.toComponents{ hours, minutes, seconds ->
+        duration.toComponents{ hours, minutes, seconds, nano ->
             this@SessionTimerService.hours.value = hours.toInt().pad()
             this@SessionTimerService.minutes.value = minutes.pad()
             this@SessionTimerService.second.value = seconds.pad()
         }
     }
 
+    inner class StudySessionTimerBinder: Binder() {
+        fun getService(): SessionTimerService = this@SessionTimerService
+    }
 
 }
 

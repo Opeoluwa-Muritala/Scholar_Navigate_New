@@ -1,20 +1,31 @@
 package com.example.scholarnavigate.ui.screen.dashboard.session
 
-import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
-import android.util.Log
-import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import com.example.scholarnavigate.R
-import com.example.scholarnavigate.data.util.Constants
+import androidx.core.net.toUri
+import com.example.scholarnavigate.MainActivity
+import com.example.scholarnavigate.data.util.Constants.CLICK_NOTIFICATION_CODE
+import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
 
 object ServiceHelper {
+
+    fun clickPendingIntent(context: Context): PendingIntent {
+        val deepLinkIntent = Intent(
+            Intent.ACTION_VIEW,
+            "scholarnavigate://example.com/${DashboardScreens.SessionScreen.route}".toUri(),
+            context,
+            MainActivity::class.java
+        )
+        return TaskStackBuilder.create(context). run {
+            addNextIntentWithParentStack(deepLinkIntent)
+            getPendingIntent(
+                CLICK_NOTIFICATION_CODE,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+        }
+    }
     fun triggerForeGroundService(context: Context, action: String){
         context.startService(
             Intent(context, SessionTimerService::class.java).apply {
@@ -24,32 +35,3 @@ object ServiceHelper {
 
     }
 }
-
-//private fun showNotification(context: Context){
-//
-//    val notificationManager = NotificationManagerCompat.from(context)
-//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//        val channel =
-//            NotificationChannel(
-//                Constants.NOTIFICATION_CHANNEL_ID,
-//                Constants.NOTIFICATION_CHANNEL_NAME,
-//                NotificationManager.IMPORTANCE_HIGH
-//            )
-//        notificationManager.createNotificationChannel(channel)
-//    }
-//    val notification = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID)
-//        .setContentTitle("Scholar Navigate")
-//        .setContentText("00:00:00")
-//        .setSmallIcon(R.drawable.applogo)
-//        .setPriority(NotificationCompat.PRIORITY_HIGH)
-//        .setOngoing(true)
-//        .build()
-//    if (ActivityCompat.checkSelfPermission(
-//            context,
-//            Manifest.permission.POST_NOTIFICATIONS
-//        ) != PackageManager.PERMISSION_GRANTED
-//    ) {
-//        return
-//    }
-//    notificationManager.notify(1, notification)
-//}

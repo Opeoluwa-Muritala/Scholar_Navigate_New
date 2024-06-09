@@ -10,10 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.scholarnavigate.navigate.HomeNavGraph
+import com.example.scholarnavigate.ui.screen.dashboard.session.SessionTimerService
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 
 @Composable
-fun HomeScreen(navController: NavHostController = rememberNavController()) {
+fun HomeScreen(navController: NavHostController = rememberNavController(), timerService: SessionTimerService) {
     ScholarNavigateTheme {
         Scaffold(
             bottomBar = {
@@ -23,7 +24,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             Column(
                 Modifier.padding(paddingValues)
             ){
-                HomeNavGraph(navController)
+                HomeNavGraph(navController, timerService)
             }
 
         }

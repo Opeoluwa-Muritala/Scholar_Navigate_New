@@ -2,6 +2,9 @@ package com.example.scholarnavigate.navigate
 
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.core.net.toUri
+import androidx.navigation.NavDeepLink
+import androidx.navigation.NavDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -9,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.example.scholarnavigate.navigate.navmodule.BottomBarScreen
 import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
@@ -17,35 +21,36 @@ import com.example.scholarnavigate.ui.screen.dashboard.DashboardScreenNavigation
 import com.example.scholarnavigate.ui.screen.dashboard.courseinfo.CourseScreenNavigation
 import com.example.scholarnavigate.ui.screen.dashboard.createTask.TaskScreenNavigation
 import com.example.scholarnavigate.ui.screen.dashboard.session.SessionScreenNavigation
+import com.example.scholarnavigate.ui.screen.dashboard.session.SessionTimerService
 
 @Composable
-fun HomeNavGraph(navController: NavHostController = rememberNavController()){
+fun HomeNavGraph(navController: NavHostController = rememberNavController(), timerService: SessionTimerService){
     NavHost(navController = navController, route = Graph.HOME , startDestination = BottomBarScreen.Dashboard.route){
-        composable(BottomBarScreen.Dashboard.route){
+        composable(BottomBarScreen.Dashboard.route,
+            deepLinks = listOf(
+                navDeepLink { uriPattern =  "scholarnavigate://example.com/${BottomBarScreen.Dashboard.route}"}
+            )
+        ){
             DashboardScreenNavigation(navController)
         }
         composable(BottomBarScreen.Calendar.route){
             CalenderUi(navController)
         }
-        dashboardScreen(navController)
-
-    }
-}
-
-fun NavGraphBuilder.dashboardScreen(navController: NavHostController){
-    navigation(route = Graph.DETAILS, startDestination = DashboardScreens.CourseScreen.route){
         composable(DashboardScreens.CourseScreen.route,
             arguments = listOf(
                 navArgument("courseId"){
                     type = NavType.IntType
                 }
             )
-        ){navbackstack ->
+        ){
             CourseScreenNavigation(navController)
 
         }
-        composable(DashboardScreens.SessionScreen.route){
-            SessionScreenNavigation(navController)
+        composable(DashboardScreens.SessionScreen.route,
+            deepLinks = listOf(
+                navDeepLink { uriPattern =  "scholarnavigate://example.com/${DashboardScreens.SessionScreen.route}" }
+            )){
+            SessionScreenNavigation(navController, timerService)
         }
         composable(DashboardScreens.TaskScreen.route,
             arguments = listOf(
@@ -56,9 +61,11 @@ fun NavGraphBuilder.dashboardScreen(navController: NavHostController){
                     type = NavType.IntType
                 }
             ),
+
             ){
             TaskScreenNavigation(navController)
         }
-    }
 
+    }
 }
+

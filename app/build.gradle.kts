@@ -92,7 +92,4 @@ dependencies {
 
     //Desugaring
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
-
-    //Calender-Row
-    //implementation("io.github.ahmednader65:ComposeSingleRowCalender:1.0.1")
 }

@@ -30,8 +30,7 @@
         </activity>
         <service android:name=".ui.screen.dashboard.session.SessionTimerService"
             android:exported="false"
-            android:foregroundServiceType="specialUse"
-            tools:ignore="ForegroundServicePermission" />
+            android:foregroundServiceType="" />
     </application>
 
 </manifest>

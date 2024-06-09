@@ -3,7 +3,10 @@ package com.example.scholarnavigate.ui.screen.splash
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.compose.animation.core.animateFloatAsState
@@ -38,12 +41,16 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.getSystemService
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.scholarnavigate.MainActivity
 import com.example.scholarnavigate.R
 import com.example.scholarnavigate.data.util.Constants
 import com.example.scholarnavigate.data.util.Constants.NOTIFICATION_ID
 import com.example.scholarnavigate.navigate.navmodule.AuthScreen
+import com.example.scholarnavigate.navigate.navmodule.BottomBarScreen
+import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import com.example.scholarnavigate.ui.theme.primaryDark
 import com.example.scholarnavigate.ui.theme.primaryLight
@@ -75,8 +82,8 @@ fun AnimatedSplashScreen(navController: NavController) {
         withContext(Dispatchers.Main){
             navController.popBackStack()
         }
-        navController.navigate(AuthScreen.Login.route)
         showNotification(context = context)
+        navController.navigate(AuthScreen.Login.route)
     }
     Splash(alphaAnim.value)
 }
@@ -99,6 +106,7 @@ private fun showNotification(context: Context){
         .setContentText("Bring Out The Scholar Within You With A Study Session")
         .setSmallIcon(R.drawable.applogo)
         .setPriority(NotificationCompat.PRIORITY_HIGH)
+        .setContentIntent(clickPendingIntent(context))
         .build()
 
     if (ActivityCompat.checkSelfPermission(
@@ -109,6 +117,23 @@ private fun showNotification(context: Context){
         return
     }
     notificationManager.notify(NOTIFICATION_ID, notification)
+}
+
+
+private fun clickPendingIntent(context: Context): PendingIntent {
+    val deepLinkIntent = Intent(
+        Intent.ACTION_VIEW,
+        "scholarnavigate://example.com/${BottomBarScreen.Dashboard.route}".toUri(),
+        context,
+        MainActivity::class.java
+    )
+    return TaskStackBuilder.create(context). run {
+        addNextIntentWithParentStack(deepLinkIntent)
+        getPendingIntent(
+            Constants.CLICK_NOTIFICATION_CODE,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+    }
 }
 
 @Composable

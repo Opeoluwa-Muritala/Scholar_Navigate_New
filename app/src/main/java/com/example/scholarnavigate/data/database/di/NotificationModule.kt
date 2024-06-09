@@ -11,6 +11,7 @@ import androidx.core.content.getSystemService
 import com.example.scholarnavigate.R
 import com.example.scholarnavigate.data.util.Constants
 import com.example.scholarnavigate.data.util.Constants.NOTIFICATION_CHANNEL_ID
+import com.example.scholarnavigate.ui.screen.dashboard.session.ServiceHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,7 +33,8 @@ object NotificationModule {
             .setContentTitle("Scholar Navigate")
             .setContentText("00:00:00")
             .setSmallIcon(R.drawable.applogo)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(ServiceHelper.clickPendingIntent(context))
             .setOngoing(true)
     }
 
@@ -45,8 +47,8 @@ object NotificationModule {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel =
                 NotificationChannel(
-                    NOTIFICATION_CHANNEL_ID,
-                    Constants.NOTIFICATION_CHANNEL_NAME,
+                    Constants.TIMER_CHANNEL_ID,
+                    Constants.TIMER_CHANNEL_NAME,
                     NotificationManager.IMPORTANCE_HIGH
                 )
             notificationManager.createNotificationChannel(channel)
