@@ -32,7 +32,7 @@ class TaskRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteTaskBySubjectId(courseId: Int) {
-        TODO("Not yet implemented")
+        taskDao.deleteTaskBySubjectId(courseId)
     }
 
     override suspend fun getTaskById(taskId: Int): Task? {

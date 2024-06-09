@@ -5,6 +5,7 @@ import com.example.scholarnavigate.data.module.Session
 import com.example.scholarnavigate.data.database.repositoryInterface.SessionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
 import javax.inject.Inject
 
@@ -16,11 +17,12 @@ class SessionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteSession(session: Session) {
-        TODO("Not yet implemented")
+        sessionDao.deleteSession(session)
     }
 
     override fun getAllSession(): Flow<List<Session>> {
-        TODO("Not yet implemented")
+        return sessionDao.getAllSession()
+            .map { session-> session.sortedByDescending { it.date } }
     }
 
     override fun getRecentFiveSessions(): Flow<List<Session>> {
@@ -40,6 +42,6 @@ class SessionRepositoryImpl @Inject constructor(
     }
 
     override fun deleteSessionByCourse(courseId: Int) {
-        TODO("Not yet implemented")
+        sessionDao.deleteSessionByCourse(courseId)
     }
 }

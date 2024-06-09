@@ -18,7 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
     private val taskRepository: TaskRepository,
-    savedStateHandle: SavedStateHandle
 ): ViewModel() {
     val tasks: StateFlow<List<Task>> = taskRepository.getAllTask()
         .stateIn(

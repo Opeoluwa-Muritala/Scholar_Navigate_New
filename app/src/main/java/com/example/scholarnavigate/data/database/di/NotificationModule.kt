@@ -1,13 +1,11 @@
 package com.example.scholarnavigate.data.database.di
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.getSystemService
 import com.example.scholarnavigate.R
 import com.example.scholarnavigate.data.util.Constants
 import com.example.scholarnavigate.data.util.Constants.NOTIFICATION_CHANNEL_ID
@@ -49,7 +47,7 @@ object NotificationModule {
                 NotificationChannel(
                     Constants.TIMER_CHANNEL_ID,
                     Constants.TIMER_CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_HIGH
+                    NotificationManager.IMPORTANCE_DEFAULT
                 )
             notificationManager.createNotificationChannel(channel)
             }

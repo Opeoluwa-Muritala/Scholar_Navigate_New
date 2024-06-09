@@ -101,7 +101,7 @@ class DashboardViewModel @Inject constructor(
                     )
                 }
             }
-            is DashBoardEvent.DeleteSession -> TODO()
+            is DashBoardEvent.DeleteSession -> deleteSession()
             is DashBoardEvent.onTaskIsCompleteChange -> {
                 viewModelScope.launch {
                     taskRepository.upsertTask(
@@ -143,6 +143,24 @@ class DashboardViewModel @Inject constructor(
                )
            }
 
+        }
+    }
+
+    private fun deleteSession() {
+        viewModelScope.launch {
+            try {
+                state.value.session?.let {
+                    sessionRepository.deleteSession(it)
+                }
+                _snackbarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar("Session Deleted Successfully")
+                )
+            } catch (e: Exception){
+                SnackBarEvent.ShowSnackBar(
+                    "Couldn't Delete Session. ${e.message}",
+                    duration = SnackbarDuration.Long
+                )
+            }
         }
     }
 }

@@ -21,7 +21,6 @@ import com.example.scholarnavigate.R
 
 @Composable
 fun SubjectCard(
-    modifier: Modifier = Modifier,
     courseName: String,
     gradientColors: List<Color>,
     onClick: () -> Unit

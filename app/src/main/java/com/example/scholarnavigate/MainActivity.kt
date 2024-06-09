@@ -1,7 +1,6 @@
 package com.example.scholarnavigate
 
 import android.Manifest
-import android.app.NotificationManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -21,15 +20,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.toArgb
-import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
-import com.example.scholarnavigate.R.*
-import com.example.scholarnavigate.data.module.Course
-import com.example.scholarnavigate.data.module.Session
-import com.example.scholarnavigate.data.module.Task
-import com.example.scholarnavigate.data.util.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.scholarnavigate.navigate.RootNavigationGraph
 import com.example.scholarnavigate.ui.screen.dashboard.session.SessionTimerService
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme

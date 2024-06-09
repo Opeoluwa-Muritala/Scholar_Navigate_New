@@ -8,7 +8,6 @@ import android.content.Intent
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -50,7 +49,9 @@ class SessionTimerService: Service() {
     var currentState =  mutableStateOf(TimerState.IDLE)
         private set
 
-    override fun onBind(intent: Intent?): IBinder? = binder
+    var courseId = mutableStateOf<Int?>(null)
+
+    override fun onBind(intent: Intent?): IBinder = binder
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.action.let {
@@ -90,7 +91,7 @@ class SessionTimerService: Service() {
                 NotificationChannel(
                     TIMER_CHANNEL_ID,
                     TIMER_CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_HIGH
+                    NotificationManager.IMPORTANCE_DEFAULT
                 )
             notificationManager.createNotificationChannel(channel)
         }
@@ -137,7 +138,7 @@ class SessionTimerService: Service() {
     }
 
     private fun updateTimeMillis(){
-        duration.toComponents{ hours, minutes, seconds, nano ->
+        duration.toComponents{ hours, minutes, seconds, _ ->
             this@SessionTimerService.hours.value = hours.toInt().pad()
             this@SessionTimerService.minutes.value = minutes.pad()
             this@SessionTimerService.second.value = seconds.pad()

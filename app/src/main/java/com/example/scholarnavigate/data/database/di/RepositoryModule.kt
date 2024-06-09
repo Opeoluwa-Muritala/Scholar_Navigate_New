@@ -1,4 +1,4 @@
-package com.example.scholarnavigate.viewmodels
+package com.example.scholarnavigate.data.database.di
 
 import com.example.scholarnavigate.data.database.local.repository.CourseRepositoryImpl
 import com.example.scholarnavigate.data.database.local.repository.SessionRepositoryImpl

@@ -97,8 +97,14 @@ class CourseViewModel @Inject constructor(
                     )
                 }
             }
-            is CourseEvent.OnDeleteSessionButtonClick -> TODO()
-            CourseEvent.DeleteSession -> TODO()
+            is CourseEvent.OnDeleteSessionButtonClick -> {
+                _state.update {
+                    it.copy(
+                        session = event.session
+                    )
+                }
+            }
+            CourseEvent.DeleteSession -> deleteSession()
         }
     }
 
@@ -182,6 +188,23 @@ class CourseViewModel @Inject constructor(
                         "Couldn't Update Course ${e.message}",
                         duration = SnackbarDuration.Long
                     )
+                )
+            }
+        }
+    }
+    private fun deleteSession() {
+        viewModelScope.launch {
+            try {
+                state.value.session?.let {
+                    sessionRepository.deleteSession(it)
+                }
+                _snackbarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar("Session Deleted Successfully")
+                )
+            } catch (e: Exception){
+                SnackBarEvent.ShowSnackBar(
+                    "Couldn't Delete Session. ${e.message}",
+                    duration = SnackbarDuration.Long
                 )
             }
         }

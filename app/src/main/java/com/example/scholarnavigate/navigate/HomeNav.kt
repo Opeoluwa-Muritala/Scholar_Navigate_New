@@ -1,11 +1,6 @@
 package com.example.scholarnavigate.navigate
 
-import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.core.net.toUri
-import androidx.navigation.NavDeepLink
-import androidx.navigation.NavDestination
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -13,7 +8,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import androidx.navigation.navigation
 import com.example.scholarnavigate.navigate.navmodule.BottomBarScreen
 import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
 import com.example.scholarnavigate.ui.screen.calendar.CalenderUi

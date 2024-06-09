@@ -30,6 +30,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.scholarnavigate.R
 import com.example.scholarnavigate.data.module.Session
+import com.example.scholarnavigate.data.util.changeMillisToDateString
+import com.example.scholarnavigate.data.util.toHours
 import com.example.scholarnavigate.ui.theme.onPrimaryDark
 import com.example.scholarnavigate.ui.theme.onPrimaryLight
 import com.example.scholarnavigate.ui.theme.primaryContainerDark
@@ -112,13 +114,13 @@ private fun StudySessionCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "${session.date}",
+                    text = session.date.changeMillisToDateString(),
                     style = MaterialTheme.typography.bodySmall,
                 )
                 }
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = "${session.duration} hr",
+                text = "${session.duration.toHours()} hr",
                 style = MaterialTheme.typography.titleMedium,
             )
             IconButton(onClick = onDeleteClick) {
