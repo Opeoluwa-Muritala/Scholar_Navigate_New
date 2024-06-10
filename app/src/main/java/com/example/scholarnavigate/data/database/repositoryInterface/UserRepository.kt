@@ -4,7 +4,7 @@ import com.example.scholarnavigate.data.module.UserData
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    suspend fun saveUserDate(userData: UserData)
+    suspend fun saveUserData(userData: UserData)
 
     fun getsavedUser(): UserData?
 

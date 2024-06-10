@@ -3,6 +3,7 @@ package com.example.firebaseauthyt.di
 import com.example.firebaseauthyt.data.AuthRepository
 import com.example.scholarnavigate.data.database.local.data_access_objects.UserDao
 import com.example.scholarnavigate.data.database.local.repository.AuthRepositoryImpl
+import com.example.scholarnavigate.data.database.repositoryInterface.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
@@ -20,7 +21,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesRepositoryImpl(firebaseAuth: FirebaseAuth, userDao: UserDao):AuthRepository{
-        return AuthRepositoryImpl(firebaseAuth, userDao)
+    fun providesRepositoryImpl(firebaseAuth: FirebaseAuth, userRepository: UserRepository):AuthRepository{
+        return AuthRepositoryImpl(firebaseAuth, userRepository)
     }
 }

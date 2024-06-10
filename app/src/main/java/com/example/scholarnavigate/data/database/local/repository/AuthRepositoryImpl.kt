@@ -2,7 +2,7 @@ package com.example.scholarnavigate.data.database.local.repository
 
 import com.example.firebaseauthyt.data.AuthRepository
 import com.example.firebaseauthyt.util.Resource
-import com.example.scholarnavigate.data.database.local.data_access_objects.UserDao
+import com.example.scholarnavigate.data.database.repositoryInterface.UserRepository
 import com.example.scholarnavigate.data.module.UserData
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val userDao: UserDao
+    private val userRepository: UserRepository
 ) : AuthRepository {
 
     override fun googleSignIn(credential: AuthCredential): Flow<Resource<AuthResult>> {
@@ -30,7 +30,7 @@ class AuthRepositoryImpl @Inject constructor(
                     profilePictureUrl = firebaseUser.photoUrl.toString(),
                     email = firebaseUser.email ?: ""
                 )
-                userDao.saveUser(userData)
+                userRepository.saveUserData(userData)
             } else {
                 emit(Resource.Error("User Data Not Available"))
             }

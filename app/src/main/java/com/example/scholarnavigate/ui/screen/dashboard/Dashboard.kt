@@ -102,6 +102,7 @@ fun DashboardScreenNavigation(navController: NavController){
     val recentSessions by viewModel.sessions.collectAsState()
 
 
+    viewModel.getUserData()
     DashboardScreen(
         state = state,
         onEvent = viewModel::onEvent,

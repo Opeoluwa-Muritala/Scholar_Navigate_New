@@ -1,5 +1,6 @@
 package com.example.scholarnavigate.viewmodels
 
+import android.util.Log
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
@@ -82,6 +83,7 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             user = userRepository.getsavedUser()!!
         }
+        Log.d("user", "$user")
         return user
     }
     fun onEvent(event: DashBoardEvent){

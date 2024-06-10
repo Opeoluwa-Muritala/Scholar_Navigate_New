@@ -55,8 +55,7 @@ fun LoginUi(
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
-            val account =
-                com.google.android.gms.auth.api.signin.GoogleSignIn.getSignedInAccountFromIntent(it.data)
+            val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
             try {
                 val result = account.getResult(ApiException::class.java)
                 val credentials = GoogleAuthProvider.getCredential(result.idToken, null)
@@ -65,8 +64,6 @@ fun LoginUi(
                 print(it)
             }
         }
-
-    val state = viewModel.signInState.collectAsState(initial = null)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     ScholarNavigateTheme {
@@ -115,7 +112,6 @@ fun LoginUi(
                                     gso
                                 )
                             launcher.launch(googleSingInClient.signInIntent)
-                            navController.navigate(Graph.HOME)
                         }
                     )
                     Spacer(modifier = Modifier.height(30.dp))
@@ -124,33 +120,10 @@ fun LoginUi(
             }
         }
 
-
-
-    LaunchedEffect(key1 = state.value?.isSuccess) {
-        scope.launch {
-            if (state.value?.isSuccess?.isNotEmpty() == true) {
-                val success = state.value?.isSuccess
-                navController.navigate(Graph.HOME)
-                Toast.makeText(context, "$success", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    LaunchedEffect(key1 = state.value?.isError) {
-        scope.launch {
-            if (state.value?.isError?.isNotEmpty() == true) {
-                val error = state.value?.isError
-                Toast.makeText(context, "$error", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
     LaunchedEffect(key1 = googleSignInState.success) {
         scope.launch {
-            if (googleSignInState.success != null) {
-                    navController.navigate(Graph.HOME)
-                    Toast.makeText(context, "Sign In Success", Toast.LENGTH_SHORT).show()
-            }
+            navController.navigate(Graph.HOME)
+            Toast.makeText(context, "Sign In Success", Toast.LENGTH_SHORT).show()
         }
     }
     LaunchedEffect(key1 = googleSignInState.error) {
