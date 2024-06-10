@@ -1,5 +1,6 @@
 package com.example.scholarnavigate.ui.screen.dashboard
 
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -117,8 +118,11 @@ fun DashboardScreenNavigation(navController: NavController){
             navController.navigate(DashboardScreens.TaskScreen.createTask(courseId = 0, taskId = it ?: 1))
         },
         navigate = {
-            navController.navigateUp()
-        }
+            viewModel.logout(navController)
+            navController.navigate(Graph.AUTHENTCATION){
+                popUpTo(0)
+            }
+        },
     )
 }
 @OptIn(ExperimentalMaterial3Api::class)
@@ -132,7 +136,7 @@ fun DashboardScreen(
     onCourseCardClick:(Int?) -> Unit,
     onTaskCardClick:(Int?) -> Unit,
     onStartStudySessionButtonClick:() -> Unit,
-    navigate: () -> Unit
+    navigate: () -> Unit,
 ) {
 
 
@@ -187,13 +191,9 @@ fun DashboardScreen(
             },
             isOpen = isDeleteDialogOpen
         )
-        val userViewModel: SignInViewModel = hiltViewModel()
-        LaunchedEffect(key1 = true,) {
-            userViewModel.fetchUser()
-        }
+        
         val scope = rememberCoroutineScope()
-        val user = userViewModel.state
-        val context = LocalContext.current
+        
         val sheetState = rememberModalBottomSheetState()
 
         var bottomSheet by remember {
@@ -203,20 +203,8 @@ fun DashboardScreen(
             ModalBottomSheet(
                 content = {
                     DrawerContent(
-                        userData = user.value,
                         onLogOutClick = {
-                            val gso =
-                                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                    .requestEmail()
-                                    .requestIdToken(webclientId.clientId)
-                                    .build()
-                            val googleSingInClient = GoogleSignIn.getClient(context, gso)
-                            userViewModel.removeUser()
-                            googleSingInClient.signOut()
-                            scope.launch {
-                                sheetState.hide()
-                                navigate()
-                            }
+                            navigate()
                         }
                     )
 
@@ -236,7 +224,6 @@ fun DashboardScreen(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
                 DashboardTopAppBar(
-                    userData = user.value,
                     onIconClick = {
                         bottomSheet = true
                         scope.launch{
@@ -316,7 +303,6 @@ fun DashboardScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DashboardTopAppBar(
-    userData: UserData?,
     onIconClick: () -> Unit
 ) {
     CenterAlignedTopAppBar(
@@ -333,25 +319,15 @@ private fun DashboardTopAppBar(
                 }
             ) {
                 Spacer(modifier = Modifier.width(15.dp))
-                if (userData?.profilePictureUrl == null) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
+                        painter = painterResource(id = R.drawable.profile_icon),
                         contentDescription = "No Image Found",
                         modifier = Modifier
                             .size(40.dp)
                             .clip(CircleShape),
                         contentScale = ContentScale.Crop
                     )
-                } else {
-                    AsyncImage(
-                        model = userData.profilePictureUrl ,
-                        contentDescription ="Profile Image",
-                        modifier = Modifier
-                            .size(100.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
-                }
+
             }
 
         }
@@ -360,7 +336,6 @@ private fun DashboardTopAppBar(
 
 @Composable
 private fun DrawerContent(
-    userData: UserData?,
     onLogOutClick:() -> Unit
 ){
     Column(
@@ -372,27 +347,16 @@ private fun DrawerContent(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (userData?.profilePictureUrl == null) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
+                    painter = painterResource(id = R.drawable.profile_icon),
                     contentDescription = "No Image Found",
                     modifier = Modifier
                         .size(100.dp)
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
-            } else {
-                AsyncImage(
-                    model = userData.profilePictureUrl ,
-                    contentDescription ="Profile Image",
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
-            }
+
             Spacer(modifier = Modifier.height(10.dp))
-            Text(text = userData?.username ?: "Couldn't Load Name From Google Account", style = MaterialTheme.typography.headlineMedium)
 
             Spacer(modifier = Modifier.height(30.dp))
             Row(
@@ -401,8 +365,8 @@ private fun DrawerContent(
                 },
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = ImageVector.Companion.vectorResource(id = R.drawable.baseline_output_24),
+                Image(
+                    painterResource(id = R.drawable.sign_out),
                     modifier = Modifier.size(30.dp),
                     contentDescription = "Log Out"
                 )

@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Insert
 import com.example.scholarnavigate.data.module.UserData
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
@@ -13,7 +14,9 @@ interface UserDao {
     @Query("DELETE FROM UserData WHERE userId = :userId")
     suspend fun deleteUserData(userId: Int)
 
-    @Query("SELECT * FROM UserData WHERE userId = :userId")
-    fun getUserData(userId: Int): UserData?
+    @Query("SELECT * FROM UserData")
+    fun getUserData(): UserData?
+    @Query("SELECT COUNT(*)  FROM UserData")
+    fun getUserCount(): Flow<Int>
 
 }

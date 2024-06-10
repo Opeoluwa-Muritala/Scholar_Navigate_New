@@ -15,12 +15,25 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
+    private val userDao: UserDao
 ) : AuthRepository {
 
     override fun googleSignIn(credential: AuthCredential): Flow<Resource<AuthResult>> {
         return flow {
             emit(Resource.Loading())
             val result = firebaseAuth.signInWithCredential(credential).await()
+            val firebaseUser = result.user
+            if (firebaseUser != null) {
+                val userData =  UserData(
+                    userId = firebaseUser.uid.toInt(),
+                    username =  firebaseUser.displayName ?: "",
+                    profilePictureUrl = firebaseUser.photoUrl.toString(),
+                    email = firebaseUser.email ?: ""
+                )
+                userDao.saveUser(userData)
+            } else {
+                emit(Resource.Error("User Data Not Available"))
+            }
             emit(Resource.Success(result))
         }.catch {
             emit(Resource.Error(it.message.toString()))

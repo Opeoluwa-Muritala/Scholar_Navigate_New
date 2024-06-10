@@ -57,7 +57,7 @@ fun LazyListScope.todoTasksList(
                     modifier = Modifier
                         .size(120.dp)
                         .align(Alignment.CenterHorizontally),
-                    painter = painterResource(id = R.drawable.tasks),
+                    painter = painterResource(id = R.drawable.task_icon),
                     contentDescription = emptyTaskList
                 )
                 Spacer(modifier = Modifier.height(12.dp))

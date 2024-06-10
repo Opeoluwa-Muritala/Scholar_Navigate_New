@@ -67,7 +67,7 @@ fun AnimatedSplashScreen(navController: NavController) {
     )
     val context =LocalContext.current
 
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(key1 = true) {
         startAnimation = true
         delay(500)
         startAnimation = false
@@ -75,17 +75,19 @@ fun AnimatedSplashScreen(navController: NavController) {
         startAnimation = true
         delay(2000)
 
-        withContext(Dispatchers.Main){
+        withContext(Dispatchers.Main) {
             navController.popBackStack()
         }
         showNotification(context = context)
-        viewModel.fetchUser()
-        val user = viewModel.state.value
-        if (user == null){
-            navController.navigate(AuthScreen.Login.route)
+        val isLoggedIn = viewModel.isUserLoggedIn()
+        if (isLoggedIn) {
+            navController.navigate(Graph.HOME) {
+            }
         } else {
-            navController.navigate(Graph.HOME)
+            navController.navigate(AuthScreen.Login.route)
+
         }
+
 
     }
     Splash(alphaAnim.value)

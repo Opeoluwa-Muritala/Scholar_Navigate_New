@@ -1,7 +1,7 @@
 package com.example.scholarnavigate.ui.screen.dashboard
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
@@ -40,7 +40,7 @@ fun BottomNavGraph(navController: NavHostController) {
                         navController.navigate(screen.route)
                     },
                     icon = {
-                        Icon(
+                        Image(
                             painterResource(id = screen.icon),
                             contentDescription = screen.route,
                             modifier = Modifier.size(30.dp)

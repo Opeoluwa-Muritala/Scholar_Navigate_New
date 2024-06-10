@@ -4,16 +4,21 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.example.scholarnavigate.data.database.repositoryInterface.CourseRepository
 import com.example.scholarnavigate.data.database.repositoryInterface.SessionRepository
 import com.example.scholarnavigate.data.database.repositoryInterface.TaskRepository
+import com.example.scholarnavigate.data.database.repositoryInterface.UserRepository
 import com.example.scholarnavigate.data.module.Course
 import com.example.scholarnavigate.data.module.Session
 import com.example.scholarnavigate.data.module.Task
+import com.example.scholarnavigate.data.module.UserData
 import com.example.scholarnavigate.data.uimodule.DashboardState
 import com.example.scholarnavigate.data.util.SnackBarEvent
 import com.example.scholarnavigate.data.util.toHours
+import com.example.scholarnavigate.navigate.Graph
 import com.example.scholarnavigate.viewmodels.events.DashBoardEvent
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +35,8 @@ import javax.inject.Inject
 class DashboardViewModel @Inject constructor(
     private val courseRepository: CourseRepository,
     private val sessionRepository: SessionRepository,
-    private val taskRepository: TaskRepository
+    private val taskRepository: TaskRepository,
+    private val userRepository: UserRepository
 ): ViewModel() {
     private val _state = MutableStateFlow(DashboardState())
     val state = combine(
@@ -70,6 +76,14 @@ class DashboardViewModel @Inject constructor(
     private val _snackbarEventFlow = MutableSharedFlow<SnackBarEvent>()
     val snackBarEvenFlow = _snackbarEventFlow.asSharedFlow()
 
+
+    fun getUserData(): UserData {
+        var user = UserData()
+        viewModelScope.launch {
+            user = userRepository.getsavedUser()!!
+        }
+        return user
+    }
     fun onEvent(event: DashBoardEvent){
         when (event) {
             is DashBoardEvent.SaveCourse -> saveCourse()
@@ -161,6 +175,20 @@ class DashboardViewModel @Inject constructor(
                     duration = SnackbarDuration.Long
                 )
             }
+        }
+    }
+    fun logout(navController: NavController) = viewModelScope.launch {
+        try {
+            FirebaseAuth.getInstance().signOut()
+            navController.navigate(Graph.AUTHENTCATION){
+                popUpTo(0)
+            }
+            userRepository.deleteUserData(1)
+        } catch (e:Exception){
+            SnackBarEvent.ShowSnackBar(
+                "Couldn't Sign Out ${e.message}",
+                duration = SnackbarDuration.Long
+            )
         }
     }
 }

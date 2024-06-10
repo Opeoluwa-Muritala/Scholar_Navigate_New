@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class UserData(
     @PrimaryKey(autoGenerate = true)
     val userId: Int? = null,
-    val username: String?,
-    val profilePictureUrl: String?,
-    val email: String?
+    val username: String?  = null,
+    val profilePictureUrl: String?  = null,
+    val email: String?  = null
 )

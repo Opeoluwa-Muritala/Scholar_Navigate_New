@@ -33,13 +33,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.firebaseauthyt.presentation.login_screen.SignInViewModel
 import com.example.scholarnavigate.R
-import com.example.scholarnavigate.data.module.UserData
 import com.example.scholarnavigate.data.util.webclientId
 import com.example.scholarnavigate.navigate.Graph
-import com.example.scholarnavigate.ui.screen.Login.components.GoogleSignIn
+import com.example.scholarnavigate.ui.screen.Login.components.GoogleSignInButton
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import com.example.scholarnavigate.ui.theme.onSurfaceVariantLight
 import com.example.scholarnavigate.ui.theme.primaryLight
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
@@ -102,7 +102,7 @@ fun LoginUi(
                         colorFilter = ColorFilter.tint(if (isSystemInDarkTheme()) Color.White else Color.Blue)
                     )
                     Spacer(modifier = Modifier.height(25.dp))
-                    GoogleSignIn(
+                    GoogleSignInButton(
                         onClick = {
                             val gso =
                                 GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -110,11 +110,12 @@ fun LoginUi(
                                     .requestIdToken(webclientId.clientId)
                                     .build()
                             val googleSingInClient =
-                                com.google.android.gms.auth.api.signin.GoogleSignIn.getClient(
+                                GoogleSignIn.getClient(
                                     context,
                                     gso
                                 )
                             launcher.launch(googleSingInClient.signInIntent)
+                            navController.navigate(Graph.HOME)
                         }
                     )
                     Spacer(modifier = Modifier.height(30.dp))
@@ -123,12 +124,13 @@ fun LoginUi(
             }
         }
 
-    }
+
 
     LaunchedEffect(key1 = state.value?.isSuccess) {
         scope.launch {
             if (state.value?.isSuccess?.isNotEmpty() == true) {
                 val success = state.value?.isSuccess
+                navController.navigate(Graph.HOME)
                 Toast.makeText(context, "$success", Toast.LENGTH_LONG).show()
             }
         }
@@ -146,28 +148,15 @@ fun LoginUi(
     LaunchedEffect(key1 = googleSignInState.success) {
         scope.launch {
             if (googleSignInState.success != null) {
+                    navController.navigate(Graph.HOME)
+                    Toast.makeText(context, "Sign In Success", Toast.LENGTH_SHORT).show()
             }
-            googleSignInState.success?.user?.let {
-                viewModel.addUser(
-                    UserData(
-                        userId = 1,
-                        username = it.displayName.toString(),
-                        profilePictureUrl = it.photoUrl?.toString(),
-                        email = it.email
-                    )
-                )
-            }
-                Toast.makeText(context, "Sign In Success", Toast.LENGTH_LONG).show()
-                navController.navigate(Graph.HOME)
-
         }
     }
     LaunchedEffect(key1 = googleSignInState.error) {
         scope.launch {
-            if (googleSignInState.error != null) {
                 val signInError = googleSignInState.error
-
-                Toast.makeText(context, signInError, Toast.LENGTH_LONG).show()
+                Toast.makeText(context, signInError, Toast.LENGTH_SHORT).show()
             }
         }
     }
