@@ -3,9 +3,11 @@ package com.example.scholarnavigate.data.database.di
 import com.example.scholarnavigate.data.database.local.repository.CourseRepositoryImpl
 import com.example.scholarnavigate.data.database.local.repository.SessionRepositoryImpl
 import com.example.scholarnavigate.data.database.local.repository.TaskRepositoryImpl
+import com.example.scholarnavigate.data.database.local.repository.UserRepositoryImpl
 import com.example.scholarnavigate.data.database.repositoryInterface.CourseRepository
 import com.example.scholarnavigate.data.database.repositoryInterface.SessionRepository
 import com.example.scholarnavigate.data.database.repositoryInterface.TaskRepository
+import com.example.scholarnavigate.data.database.repositoryInterface.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -33,4 +35,10 @@ abstract class RepositoryModule {
     abstract fun bindSessionRepository(
         impl: SessionRepositoryImpl
     ): SessionRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindUserRepository(
+        impl: UserRepositoryImpl
+    ): UserRepository
 }

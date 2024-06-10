@@ -17,9 +17,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavController){
             AnimatedSplashScreen(navController)
         }
         composable(AuthScreen.Login.route){
-            LoginUi(
-                onLoginClick = {navController.navigate(Graph.HOME)}
-            )
+            LoginUi(navController)
         }
     }
 }

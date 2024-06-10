@@ -30,16 +30,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.firebaseauthyt.presentation.login_screen.SignInViewModel
 import com.example.scholarnavigate.R
+import com.example.scholarnavigate.data.module.UserData
 import com.example.scholarnavigate.data.util.webclientId
+import com.example.scholarnavigate.navigate.Graph
 import com.example.scholarnavigate.ui.screen.Login.components.GoogleSignIn
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
-import com.example.scholarnavigate.ui.theme.errorContainerLight
-import com.example.scholarnavigate.ui.theme.onSurfaceVariantDark
 import com.example.scholarnavigate.ui.theme.onSurfaceVariantLight
 import com.example.scholarnavigate.ui.theme.primaryLight
-import com.example.scholarnavigate.ui.theme.secondaryLight
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun LoginUi(
-    onLoginClick: () -> Unit
+    navController: NavController
 ) {
 
     val viewModel: SignInViewModel = hiltViewModel()
@@ -55,7 +55,8 @@ fun LoginUi(
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
-            val account = com.google.android.gms.auth.api.signin.GoogleSignIn.getSignedInAccountFromIntent(it.data)
+            val account =
+                com.google.android.gms.auth.api.signin.GoogleSignIn.getSignedInAccountFromIntent(it.data)
             try {
                 val result = account.getResult(ApiException::class.java)
                 val credentials = GoogleAuthProvider.getCredential(result.idToken, null)
@@ -84,7 +85,8 @@ fun LoginUi(
                     .padding(20.dp),
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(
-                    if( isSystemInDarkTheme()) onSurfaceVariantLight else MaterialTheme.colorScheme.onPrimaryContainer)
+                    if (isSystemInDarkTheme()) onSurfaceVariantLight else MaterialTheme.colorScheme.onPrimaryContainer
+                )
             ) {
                 Column(
                     Modifier
@@ -97,19 +99,21 @@ fun LoginUi(
                         modifier = Modifier.size(200.dp),
                         painter = painterResource(id = R.drawable.applogo),
                         contentDescription = "Scholar Navigate",
-                        colorFilter = ColorFilter.tint( if (isSystemInDarkTheme()) Color.White else Color.Blue)
+                        colorFilter = ColorFilter.tint(if (isSystemInDarkTheme()) Color.White else Color.Blue)
                     )
                     Spacer(modifier = Modifier.height(25.dp))
                     GoogleSignIn(
                         onClick = {
-                            onLoginClick()
-                            val gso= GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                .requestEmail()
-                                .requestIdToken(webclientId.clientId)
-                                .build()
-
-                            val googleSingInClient = com.google.android.gms.auth.api.signin.GoogleSignIn.getClient(context, gso)
-
+                            val gso =
+                                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                    .requestEmail()
+                                    .requestIdToken(webclientId.clientId)
+                                    .build()
+                            val googleSingInClient =
+                                com.google.android.gms.auth.api.signin.GoogleSignIn.getClient(
+                                    context,
+                                    gso
+                                )
                             launcher.launch(googleSingInClient.signInIntent)
                         }
                     )
@@ -125,7 +129,7 @@ fun LoginUi(
         scope.launch {
             if (state.value?.isSuccess?.isNotEmpty() == true) {
                 val success = state.value?.isSuccess
-                Toast.makeText(context, "${success}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "$success", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -134,7 +138,7 @@ fun LoginUi(
         scope.launch {
             if (state.value?.isError?.isNotEmpty() == true) {
                 val error = state.value?.isError
-                Toast.makeText(context, "${error}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "$error", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -142,9 +146,30 @@ fun LoginUi(
     LaunchedEffect(key1 = googleSignInState.success) {
         scope.launch {
             if (googleSignInState.success != null) {
+            }
+            googleSignInState.success?.user?.let {
+                viewModel.addUser(
+                    UserData(
+                        userId = 1,
+                        username = it.displayName.toString(),
+                        profilePictureUrl = it.photoUrl?.toString(),
+                        email = it.email
+                    )
+                )
+            }
                 Toast.makeText(context, "Sign In Success", Toast.LENGTH_LONG).show()
+                navController.navigate(Graph.HOME)
+
+        }
+    }
+    LaunchedEffect(key1 = googleSignInState.error) {
+        scope.launch {
+            if (googleSignInState.error != null) {
+                val signInError = googleSignInState.error
+
+                Toast.makeText(context, signInError, Toast.LENGTH_LONG).show()
             }
         }
     }
-
 }
+

@@ -6,12 +6,14 @@ import androidx.room.TypeConverters
 import com.example.scholarnavigate.data.database.local.data_access_objects.CourseDao
 import com.example.scholarnavigate.data.database.local.data_access_objects.SessionDao
 import com.example.scholarnavigate.data.database.local.data_access_objects.TaskDao
+import com.example.scholarnavigate.data.database.local.data_access_objects.UserDao
 import com.example.scholarnavigate.data.module.Course
 import com.example.scholarnavigate.data.module.Session
 import com.example.scholarnavigate.data.module.Task
+import com.example.scholarnavigate.data.module.UserData
 
 @Database(
-    entities = [Course::class, Session::class, Task::class],
+    entities = [Course::class, Session::class, Task::class, UserData::class],
     version = 1,
     exportSchema = false
 )
@@ -20,4 +22,5 @@ abstract class AppDataBase :RoomDatabase(){
     abstract fun courseDao(): CourseDao
     abstract fun taskDao(): TaskDao
     abstract fun sessionDao(): SessionDao
+    abstract fun userDao(): UserDao
 }

@@ -92,8 +92,13 @@ dependencies {
     //fonts
     implementation("androidx.compose.ui:ui-text-google-fonts:1.6.7")
 
+    //FireBase Login
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
     //Desugaring
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
+
+    //Image Loading
+    implementation("io.coil-kt:coil-compose:2.2.2")
+
 }

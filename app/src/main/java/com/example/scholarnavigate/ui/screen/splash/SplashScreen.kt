@@ -36,11 +36,15 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.firebaseauthyt.presentation.login_screen.GoogleSignInState
+import com.example.firebaseauthyt.presentation.login_screen.SignInViewModel
 import com.example.scholarnavigate.MainActivity
 import com.example.scholarnavigate.R
 import com.example.scholarnavigate.data.util.Constants
 import com.example.scholarnavigate.data.util.Constants.NOTIFICATION_ID
+import com.example.scholarnavigate.navigate.Graph
 import com.example.scholarnavigate.navigate.navmodule.AuthScreen
 import com.example.scholarnavigate.navigate.navmodule.BottomBarScreen
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
@@ -51,6 +55,7 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun AnimatedSplashScreen(navController: NavController) {
+    val viewModel: SignInViewModel = hiltViewModel()
     var startAnimation by remember {
         mutableStateOf(false)
     }
@@ -74,7 +79,14 @@ fun AnimatedSplashScreen(navController: NavController) {
             navController.popBackStack()
         }
         showNotification(context = context)
-        navController.navigate(AuthScreen.Login.route)
+        viewModel.fetchUser()
+        val user = viewModel.state.value
+        if (user == null){
+            navController.navigate(AuthScreen.Login.route)
+        } else {
+            navController.navigate(Graph.HOME)
+        }
+
     }
     Splash(alphaAnim.value)
 }

@@ -235,6 +235,9 @@ private fun CourseScreen(
                         isDeleteDialogOpen = true
                     }
                 )
+                item {
+                    Spacer(modifier = Modifier.height(30.dp))
+                }
             }
         }
     }

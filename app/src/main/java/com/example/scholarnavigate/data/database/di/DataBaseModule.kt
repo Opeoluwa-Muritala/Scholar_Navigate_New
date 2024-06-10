@@ -6,6 +6,7 @@ import com.example.scholarnavigate.data.database.local.AppDataBase
 import com.example.scholarnavigate.data.database.local.data_access_objects.CourseDao
 import com.example.scholarnavigate.data.database.local.data_access_objects.SessionDao
 import com.example.scholarnavigate.data.database.local.data_access_objects.TaskDao
+import com.example.scholarnavigate.data.database.local.data_access_objects.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,7 +26,7 @@ object DataBaseModule {
             .databaseBuilder(
                 application,
                 AppDataBase::class.java,
-                "scholar_navigate.db"
+                "scholarnavigate.db"
             )
             .build()
     }
@@ -46,5 +47,11 @@ object DataBaseModule {
     @Singleton
     fun provideTaskDao(dataBase: AppDataBase): TaskDao {
         return dataBase.taskDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserDao(dataBase: AppDataBase): UserDao {
+        return dataBase.userDao()
     }
 }
