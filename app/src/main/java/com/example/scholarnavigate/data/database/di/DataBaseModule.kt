@@ -26,8 +26,9 @@ object DataBaseModule {
             .databaseBuilder(
                 application,
                 AppDataBase::class.java,
-                "scholarnavigate.db"
+                "scholar_navigate.db"
             )
+            .createFromAsset("database/scholar_navigate.db")
             .build()
     }
 

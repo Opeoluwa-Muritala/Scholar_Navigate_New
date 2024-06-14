@@ -2,13 +2,13 @@ package com.example.scholarnavigate.data.database.local.data_access_objects
 
 import androidx.room.Dao
 import androidx.room.Query
-import androidx.room.Insert
+import androidx.room.Upsert
 import com.example.scholarnavigate.data.module.UserData
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
-    @Insert
+    @Upsert
     suspend fun saveUser(user: UserData)
 
     @Query("DELETE FROM UserData WHERE userId = :userId")

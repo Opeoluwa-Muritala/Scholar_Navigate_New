@@ -14,6 +14,7 @@ data class Course(
     val name: String,
     val goalHours: Float,
     val colors: List<Int>,
+    val syllabus: String,
     @PrimaryKey
     val courseId: Int? = null
 ){

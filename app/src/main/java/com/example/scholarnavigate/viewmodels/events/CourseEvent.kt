@@ -13,5 +13,7 @@ sealed class CourseEvent {
     data class OnCourseCardColorChange(val colors: List<Color>): CourseEvent()
     data class OnDeleteSessionButtonClick(val session: Session): CourseEvent()
     data class OnCourseCardNameChange(val name: String): CourseEvent()
+
+    data class onSyllabusChange(val syllabus: String): CourseEvent()
     data class OnGoalStudyHoursChange(val hours: String): CourseEvent()
 }

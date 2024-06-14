@@ -9,6 +9,7 @@ data class CourseState(
     val currentCourseId: Int? = null,
     val courseName: String = "",
     val goalStudyHours : String = "",
+    val syllabus: String = "",
     val studiedHours: Float = 0f,
     val courseCardColors: List<Color> = Course.subjectCardColors.random(),
     val recentSession: List<Session> = emptyList(),

@@ -90,6 +90,11 @@ class CourseViewModel @Inject constructor(
                     )
                 }
             }
+            is CourseEvent.onSyllabusChange -> {
+                _state.update {
+                    it.copy(syllabus = event.syllabus)
+                }
+            }
             is CourseEvent.OnTaskIsCompleteChange -> {
                 viewModelScope.launch {
                     taskRepository.upsertTask(
@@ -117,7 +122,8 @@ class CourseViewModel @Inject constructor(
                     name = state.value.courseName,
                     goalHours = state.value.goalStudyHours.toFloatOrNull() ?: 1f,
                     colors = state.value.courseCardColors.map { it.toArgb() },
-                    courseId = state.value.currentCourseId
+                    courseId = state.value.currentCourseId,
+                    syllabus = state.value.syllabus
                 )
             )
         }

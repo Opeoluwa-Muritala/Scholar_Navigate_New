@@ -19,7 +19,6 @@ import com.example.scholarnavigate.data.util.SnackBarEvent
 import com.example.scholarnavigate.data.util.toHours
 import com.example.scholarnavigate.navigate.Graph
 import com.example.scholarnavigate.viewmodels.events.DashBoardEvent
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -125,6 +124,12 @@ class DashboardViewModel @Inject constructor(
                     )
                 }
             }
+
+            is DashBoardEvent.onSyllabusChange -> {
+                _state.update {
+                    it.copy(syllabus = event.syllabus)
+                }
+            }
         }
     }
 
@@ -135,7 +140,8 @@ class DashboardViewModel @Inject constructor(
                    course = Course(
                        name = state.value.courseName,
                        goalHours = state.value.goalStudyHours.toFloatOrNull() ?: 1f,
-                       colors = state.value.courseCardColors.map { it.toArgb() }
+                       colors = state.value.courseCardColors.map { it.toArgb() },
+                       syllabus = state.value.syllabus
                    )
                )
                _state.update {
@@ -181,7 +187,6 @@ class DashboardViewModel @Inject constructor(
     }
     fun logout(navController: NavController) = viewModelScope.launch {
         try {
-            FirebaseAuth.getInstance().signOut()
             navController.navigate(Graph.AUTHENTCATION){
                 popUpTo(0)
             }

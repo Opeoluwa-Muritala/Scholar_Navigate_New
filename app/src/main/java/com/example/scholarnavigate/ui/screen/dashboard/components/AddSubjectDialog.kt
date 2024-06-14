@@ -43,6 +43,8 @@ fun AddCourseDialog(
     onDissmisRequest: () -> Unit,
     courseName: String,
     studyHours: String,
+    syllabus: String,
+    onSyllabusChange: (String) -> Unit,
     oncourseNameChange: (String) -> Unit,
     onStudyHoursChange: (String) -> Unit,
     onConfirmButtonClick: () -> Unit,
@@ -56,10 +58,20 @@ fun AddCourseDialog(
     var studyHoursError by remember {
         mutableStateOf<String?>(null)
     }
+    var syllabusError by remember {
+        mutableStateOf<String?>(null)
+    }
     courseNameError = when {
         courseName.isBlank() -> "Please enter a course name."
         courseName.length < 2 -> "Course name is too short."
         courseName.length > 20 -> "Course name is too long."
+        else -> null
+    }
+
+    syllabusError = when {
+        syllabus.isBlank() -> "Please enter Your Syllabus"
+        courseName.length < 2 -> "End every line with period '.'"
+        courseName.length < 30 -> "Course name is too long."
         else -> null
     }
 
@@ -119,12 +131,23 @@ fun AddCourseDialog(
                         isError = studyHoursError != null && studyHours.isNotBlank(),
                         supportingText = { Text(text = studyHoursError.orEmpty())}
                     )
+                    OutlinedTextField(
+                        value = syllabus.replace(".", ".\n"),
+                        onValueChange = onSyllabusChange,
+                        label = { Text(text = "Syllabus")},
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        ),
+                        isError = syllabusError != null && syllabus.isNotBlank(),
+                        supportingText = { Text(text = syllabusError.orEmpty())}
+                    )
                 }
             },
             confirmButton = {
                 TextButton(
                     onClick = onConfirmButtonClick,
-                    enabled = studyHoursError == null && courseNameError == null
+                    enabled = studyHoursError == null && courseNameError == null && syllabusError  == null
                 ) {
                     Text(text = "Save")
                 }
@@ -132,7 +155,7 @@ fun AddCourseDialog(
             dismissButton = {
                 TextButton(
                     onClick = onDissmisRequest,
-                    enabled = studyHoursError == null && courseNameError == null
+                    enabled = studyHoursError == null && courseNameError == null && syllabusError  == null
                 ) {
                     Text(text = "Cancel")
                 }

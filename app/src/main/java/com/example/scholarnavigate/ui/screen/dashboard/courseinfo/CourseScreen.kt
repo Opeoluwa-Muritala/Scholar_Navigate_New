@@ -56,6 +56,7 @@ import com.example.scholarnavigate.navigate.navmodule.DashboardScreens
 import com.example.scholarnavigate.ui.components.CountCard
 import com.example.scholarnavigate.ui.screen.dashboard.components.AddCourseDialog
 import com.example.scholarnavigate.ui.screen.dashboard.components.DeleteCourseDialog
+import com.example.scholarnavigate.ui.screen.dashboard.components.SyllabusList
 import com.example.scholarnavigate.ui.screen.dashboard.components.studySessionsList
 import com.example.scholarnavigate.ui.screen.dashboard.components.todoTasksList
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
@@ -133,6 +134,7 @@ private fun CourseScreen(
             onDissmisRequest = { isAddSubjectDialogOpen = false },
             courseName = state.courseName,
             studyHours = state.goalStudyHours,
+            syllabus = state.syllabus,
             oncourseNameChange ={onEvent(CourseEvent.OnCourseCardNameChange(it))},
             onStudyHoursChange = {onEvent(CourseEvent.OnGoalStudyHoursChange(it))},
             onConfirmButtonClick = {
@@ -143,6 +145,9 @@ private fun CourseScreen(
             selectedColors = state.courseCardColors,
             onColorChange = {
                 onEvent(CourseEvent.OnCourseCardColorChange(it))
+            },
+            onSyllabusChange = {
+                onEvent(CourseEvent.onSyllabusChange(it))
             }
         )
 
@@ -212,6 +217,9 @@ private fun CourseScreen(
                         progress = state.progress
                     )
                 }
+                SyllabusList(
+                    state.syllabus
+                )
                 todoTasksList(
                     sectionTitle = "UPCOMING TASKS",
                     tasks = state.upcomingTask,
