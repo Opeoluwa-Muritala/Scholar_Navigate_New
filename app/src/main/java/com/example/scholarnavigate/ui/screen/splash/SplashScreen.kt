@@ -80,14 +80,8 @@ fun AnimatedSplashScreen(navController: NavController) {
         }
         showNotification(context = context)
         val isLoggedIn = viewModel.isUserLoggedIn()
-        if (isLoggedIn) {
-            navController.navigate(Graph.HOME) {
-            }
-        } else {
-            navController.navigate(AuthScreen.Login.route)
 
-        }
-
+        navController.navigate(AuthScreen.Login.route)
 
     }
     Splash(alphaAnim.value)
