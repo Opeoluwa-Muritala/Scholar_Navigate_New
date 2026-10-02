@@ -63,7 +63,7 @@ fun CalenderUi(navController: NavController) {
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
-                    navController.navigate(DashboardScreens.TaskScreen.createTask(0, 0))
+                    navController.navigate(DashboardScreens.TaskScreen.createTask(taskId = -1, courseId = -1))
                 },
                 icon = { Icon(imageVector = Icons.Default.Add, contentDescription = "Add Task") },
                 text = { Text(text = "Add Task") },

@@ -15,7 +15,7 @@ interface UserDao {
     suspend fun deleteUserData(userId: Int)
 
     @Query("SELECT * FROM UserData")
-    fun getUserData(): UserData?
+    suspend fun getUserData(): UserData?
     @Query("SELECT COUNT(*)  FROM UserData")
     fun getUserCount(): Flow<Int>
 

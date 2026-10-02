@@ -26,12 +26,10 @@ object ServiceHelper {
             )
         }
     }
-    fun triggerForeGroundService(context: Context, action: String){
-        context.startService(
-            Intent(context, SessionTimerService::class.java).apply {
-            this.action = action
-            context.stopService(this)
-        })
-
+    fun triggerForeGroundService(context: Context, action: String) {
+        Intent(context, SessionTimerService::class.java).also { intent ->
+            intent.action = action
+            context.startService(intent)
+        }
     }
 }

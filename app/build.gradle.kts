@@ -71,7 +71,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0-alpha02")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.0")
 
     // Room
     val roomVersion = "2.5.2"
@@ -82,8 +82,8 @@ dependencies {
     //Dagger-Hilt
     implementation("com.google.dagger:hilt-android:2.48")
     ksp("com.google.dagger:hilt-android-compiler:2.48")
-    ksp("androidx.hilt:hilt-compiler:1.0.0")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     //fonts
     implementation("androidx.compose.ui:ui-text-google-fonts:1.6.7")

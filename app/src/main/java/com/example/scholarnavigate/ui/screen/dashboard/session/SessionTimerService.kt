@@ -54,7 +54,7 @@ class SessionTimerService: Service() {
     override fun onBind(intent: Intent?): IBinder = binder
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        intent?.action.let {
+        intent?.action?.let {
             when (it) {
                 ACTION_SERVICE_START -> {
                     startForegroundService()
@@ -74,15 +74,20 @@ class SessionTimerService: Service() {
                 }
             }
         }
-        return super.onStartCommand(intent, flags, startId)
+        return START_NOT_STICKY
     }
 
-    @SuppressLint("ForegroundServiceType")
     private fun startForegroundService() {
         createNotificationChannel()
-        startForeground(
-            TIMER_ID, notificationBuilder.build()
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(
+                TIMER_ID,
+                notificationBuilder.build(),
+                android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+            )
+        } else {
+            startForeground(TIMER_ID, notificationBuilder.build())
+        }
     }
 
     private fun createNotificationChannel() {

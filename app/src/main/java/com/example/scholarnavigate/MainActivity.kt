@@ -15,6 +15,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -84,9 +85,14 @@ class MainActivity : ComponentActivity() {
                     ).show()
                 }
             }
-            if (isBound){
+            val navController = rememberNavController()
+            if (isBound) {
                 ScholarNavigateTheme(darkTheme = isSystemInDarkTheme()) {
-                    RootNavigationGraph(navController = rememberNavController(), timerService)
+                    RootNavigationGraph(navController = navController, timerService)
+                }
+            } else {
+                ScholarNavigateTheme(darkTheme = isSystemInDarkTheme()) {
+                    androidx.compose.material3.Surface(modifier = androidx.compose.ui.Modifier.fillMaxSize()) {}
                 }
             }
 
@@ -100,8 +106,10 @@ class MainActivity : ComponentActivity() {
     }
     override fun onStop(){
         super.onStop()
-        unbindService(connection)
-        isBound = false
+        if (isBound) {
+            unbindService(connection)
+            isBound = false
+        }
     }
 
 }

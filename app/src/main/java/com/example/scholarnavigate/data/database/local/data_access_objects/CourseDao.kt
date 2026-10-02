@@ -16,7 +16,7 @@ interface CourseDao {
     @Query("SELECT COUNT(*) FROM COURSE")
     fun getTotalCourseCount() : Flow<Int>
 
-    @Query("SELECT SUM(goalHours) FROM COURSE")
+    @Query("SELECT COALESCE(SUM(goalHours), 0) FROM COURSE")
     fun getTotalGoalHours() : Flow<Float>
 
     @Query("SELECT * FROM COURSE WHERE courseId = :courseId")

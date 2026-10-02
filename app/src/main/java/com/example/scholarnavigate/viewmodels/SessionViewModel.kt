@@ -98,9 +98,11 @@ class SessionViewModel @Inject constructor(
                     SnackBarEvent.ShowSnackBar("Session Deleted Successfully")
                 )
             } catch (e: Exception){
-                SnackBarEvent.ShowSnackBar(
-                    "Couldn't Delete Session. ${e.message}",
-                    duration = SnackbarDuration.Long
+                _snackbarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar(
+                        "Couldn't Delete Session. ${e.message}",
+                        duration = SnackbarDuration.Long
+                    )
                 )
             }
         }

@@ -12,6 +12,6 @@ data class DashboardState(
     val courseName: String = "",
     val goalStudyHours: String = "",
     val syllabus: String = "",
-    val courseCardColors: List<Color> = Course.subjectCardColors.random(),
+    val courseCardColors: List<Color> = Course.subjectCardColors.first(),
     val session: Session? = null
 )

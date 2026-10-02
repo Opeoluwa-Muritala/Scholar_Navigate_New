@@ -4,9 +4,7 @@ import com.example.scholarnavigate.data.database.local.data_access_objects.Sessi
 import com.example.scholarnavigate.data.module.Session
 import com.example.scholarnavigate.data.database.repositoryInterface.SessionRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.take
 import javax.inject.Inject
 
 class SessionRepositoryImpl @Inject constructor(
@@ -26,11 +24,13 @@ class SessionRepositoryImpl @Inject constructor(
     }
 
     override fun getRecentFiveSessions(): Flow<List<Session>> {
-        return sessionDao.getAllSession().take(5)
+        return sessionDao.getAllSession()
+            .map { sessions -> sessions.sortedByDescending { it.date }.take(5) }
     }
 
     override fun getRecentTenSessionForCourse(courseId: Int): Flow<List<Session>> {
-        return sessionDao.getRecentSessionForCourse(courseId).take(10)
+        return sessionDao.getRecentSessionForCourse(courseId)
+            .map { sessions -> sessions.sortedByDescending { it.date }.take(10) }
     }
 
     override fun getTotalSessionDuration(): Flow<Long> {
@@ -41,7 +41,7 @@ class SessionRepositoryImpl @Inject constructor(
         return sessionDao.getTotalSessionDurationForCourse(courseId)
     }
 
-    override fun deleteSessionByCourse(courseId: Int) {
+    override suspend fun deleteSessionByCourse(courseId: Int) {
         sessionDao.deleteSessionByCourse(courseId)
     }
 }

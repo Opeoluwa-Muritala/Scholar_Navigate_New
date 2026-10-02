@@ -18,5 +18,5 @@ interface SessionRepository {
 
     fun getTotalSessionDurationForCourse(courseId: Int): Flow<Long>
 
-    fun deleteSessionByCourse(courseId: Int)
+    suspend fun deleteSessionByCourse(courseId: Int)
 }

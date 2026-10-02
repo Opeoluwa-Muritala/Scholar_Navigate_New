@@ -8,7 +8,8 @@ class colorListConverter {
         return colorList.joinToString(","){it.toString()}
     }
     @TypeConverter
-    fun toColorList(colorListString: String): List<Int>{
-        return colorListString.split(",").map { it.toInt() }
+    fun toColorList(colorListString: String): List<Int> {
+        if (colorListString.isBlank()) return emptyList()
+        return colorListString.split(",").mapNotNull { it.trim().toIntOrNull() }
     }
 }

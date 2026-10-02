@@ -21,12 +21,12 @@ interface SessionDao {
     @Query("SELECT * FROM SESSION WHERE sessionSubjectId = :courseId")
     fun getRecentSessionForCourse(courseId: Int): Flow<List<Session>>
 
-    @Query("SELECT SUM(duration) FROM SESSION ")
+    @Query("SELECT COALESCE(SUM(duration), 0) FROM SESSION ")
     fun getTotalSessionDuration(): Flow<Long>
 
-    @Query("SELECT SUM(duration) FROM SESSION WHERE sessionSubjectId = :courseId")
+    @Query("SELECT COALESCE(SUM(duration), 0) FROM SESSION WHERE sessionSubjectId = :courseId")
     fun getTotalSessionDurationForCourse(courseId: Int): Flow<Long>
 
     @Query("DELETE FROM SESSION WHERE sessionSubjectId = :courseId")
-    fun deleteSessionByCourse(courseId: Int)
+    suspend fun deleteSessionByCourse(courseId: Int)
 }

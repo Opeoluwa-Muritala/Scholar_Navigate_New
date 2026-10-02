@@ -80,7 +80,7 @@ fun DashboardScreenNavigation(navController: NavController){
     val recentSessions by viewModel.sessions.collectAsState()
 
 
-    viewModel.getUserData()
+    val userData by viewModel.userData.collectAsState()
     DashboardScreen(
         state = state,
         onEvent = viewModel::onEvent,
@@ -94,13 +94,10 @@ fun DashboardScreenNavigation(navController: NavController){
             navController.navigate(DashboardScreens.SessionScreen.route)
                                          },
         onTaskCardClick = {
-            navController.navigate(DashboardScreens.TaskScreen.createTask(courseId = 0, taskId = it ?: 1))
+            navController.navigate(DashboardScreens.TaskScreen.createTask(courseId = -1, taskId = it ?: -1))
         },
         navigate = {
             viewModel.logout(navController)
-            navController.navigate(Graph.AUTHENTCATION){
-                popUpTo(0)
-            }
         },
     )
 }

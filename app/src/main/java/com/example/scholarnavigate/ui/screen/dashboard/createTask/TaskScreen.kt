@@ -86,9 +86,6 @@ fun TaskScreenNavigation(navController: NavController){
         snackBarEvent = viewModel.snackBarEvenFlow,
         onBackButtonClick = {
             navController.navigateUp()
-        },
-        onSaveButtonClick = {
-            navController.navigateUp()
         }
     )
 }
@@ -99,7 +96,6 @@ private fun TaskScreen(
     state: TaskState,
     onEvent: (TaskEvent) -> Unit,
     onBackButtonClick: () -> Unit,
-    onSaveButtonClick: () -> Unit,
     snackBarEvent: SharedFlow<SnackBarEvent>,
     ) {
     var taskTitleError by rememberSaveable {
@@ -255,7 +251,6 @@ private fun TaskScreen(
                     enabled = taskTitleError == null,
                     onClick = {
                         onEvent(TaskEvent.SaveTask)
-                        onSaveButtonClick()
                               },
                     modifier = Modifier
                         .fillMaxWidth()

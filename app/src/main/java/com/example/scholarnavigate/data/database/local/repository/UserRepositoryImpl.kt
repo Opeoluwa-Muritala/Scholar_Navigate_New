@@ -13,7 +13,7 @@ class UserRepositoryImpl @Inject constructor(private val userDao: UserDao,
         userDao.saveUser(userData)
     }
 
-    override fun getsavedUser(): UserData? {
+    override suspend fun getsavedUser(): UserData? {
         return userDao.getUserData()
     }
 

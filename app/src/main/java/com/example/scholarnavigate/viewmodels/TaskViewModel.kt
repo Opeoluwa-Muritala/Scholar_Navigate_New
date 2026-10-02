@@ -144,6 +144,7 @@ class TaskViewModel @Inject constructor(
                         "Task Saved Successfully",
                     )
                 )
+                _snackbarEventFlow.emit(SnackBarEvent.NavigateUp)
             } catch (e: Exception) {
                 _snackbarEventFlow.emit(
                     SnackBarEvent.ShowSnackBar(
@@ -212,7 +213,8 @@ class TaskViewModel @Inject constructor(
     private fun fetchCourse(){
         viewModelScope.launch {
             try {
-                    courseRepository.getCourseById(courseId ?: 1)?.let { course ->
+                courseId?.let { id ->
+                    courseRepository.getCourseById(id)?.let { course ->
                         _state.update {
                             it.copy(
                                 relatedToSubject = course.name,
@@ -220,8 +222,7 @@ class TaskViewModel @Inject constructor(
                             )
                         }
                     }
-
-
+                }
             } catch (e: Exception) {
                 _snackbarEventFlow.emit(
                     SnackBarEvent.ShowSnackBar(

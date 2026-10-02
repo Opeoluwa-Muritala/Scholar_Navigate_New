@@ -75,7 +75,9 @@ fun LoginUi(
                     email = user?.email
                 )
             )
-            navController.navigate(Graph.HOME)
+            navController.navigate(Graph.HOME) {
+                popUpTo(Graph.AUTHENTCATION) { inclusive = true }
+            }
             Toast.makeText(context,"SingIn Successful", Toast.LENGTH_LONG).show()
         },
         onAuthError = {
@@ -160,12 +162,23 @@ private fun rememberFirebaseAuthLauncher(
             val account = task
                 .getResult(ApiException::class.java)!!
             Log.d("GoogleAuth", "account $account")
+            val idToken = account.idToken
+            if (idToken == null) {
+                Log.d("GoogleAuth", "ID token is null")
+                onAuthError(ApiException(com.google.android.gms.common.api.Status.RESULT_INTERNAL_ERROR))
+                return@rememberLauncherForActivityResult
+            }
             val credential = GoogleAuthProvider
-                .getCredential(account.idToken!!, null)
+                .getCredential(idToken, null)
             scope.launch {
-                val authResult = Firebase
-                    .auth.signInWithCredential(credential).await()
-                onAuthComplete(authResult)
+                try {
+                    val authResult = Firebase
+                        .auth.signInWithCredential(credential).await()
+                    onAuthComplete(authResult)
+                } catch (e: Exception) {
+                    Log.d("GoogleAuth", "signInWithCredential failed: $e")
+                    onAuthError(ApiException(com.google.android.gms.common.api.Status.RESULT_INTERNAL_ERROR))
+                }
             }
         } catch (e: ApiException) {
             Log.d("GoogleAuth", e.toString())

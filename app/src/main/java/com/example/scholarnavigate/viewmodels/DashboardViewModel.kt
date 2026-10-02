@@ -1,6 +1,5 @@
 package com.example.scholarnavigate.viewmodels
 
-import android.util.Log
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
@@ -77,14 +76,13 @@ class DashboardViewModel @Inject constructor(
     val snackBarEvenFlow = _snackbarEventFlow.asSharedFlow()
 
 
-    fun getUserData(): UserData {
-        var user = UserData()
-        viewModelScope.launch {
-            user = userRepository.getsavedUser()!!
-        }
-        Log.d("user", "$user")
-        return user
-    }
+    val userData = kotlinx.coroutines.flow.flow {
+        emit(userRepository.getsavedUser())
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
     fun onEvent(event: DashBoardEvent){
         when (event) {
             is DashBoardEvent.SaveCourse -> saveCourse()
@@ -178,9 +176,11 @@ class DashboardViewModel @Inject constructor(
                     SnackBarEvent.ShowSnackBar("Session Deleted Successfully")
                 )
             } catch (e: Exception){
-                SnackBarEvent.ShowSnackBar(
-                    "Couldn't Delete Session. ${e.message}",
-                    duration = SnackbarDuration.Long
+                _snackbarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar(
+                        "Couldn't Delete Session. ${e.message}",
+                        duration = SnackbarDuration.Long
+                    )
                 )
             }
         }
@@ -192,9 +192,11 @@ class DashboardViewModel @Inject constructor(
             }
             userRepository.deleteUserData(1)
         } catch (e:Exception){
-            SnackBarEvent.ShowSnackBar(
-                "Couldn't Sign Out ${e.message}",
-                duration = SnackbarDuration.Long
+            _snackbarEventFlow.emit(
+                SnackBarEvent.ShowSnackBar(
+                    "Couldn't Sign Out ${e.message}",
+                    duration = SnackbarDuration.Long
+                )
             )
         }
     }

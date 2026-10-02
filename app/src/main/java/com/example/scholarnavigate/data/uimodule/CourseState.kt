@@ -11,7 +11,7 @@ data class CourseState(
     val goalStudyHours : String = "",
     val syllabus: String = "",
     val studiedHours: Float = 0f,
-    val courseCardColors: List<Color> = Course.subjectCardColors.random(),
+    val courseCardColors: List<Color> = Course.subjectCardColors.first(),
     val recentSession: List<Session> = emptyList(),
     val upcomingTask: List<Task> = emptyList(),
     val completedTask: List<Task> = emptyList(),

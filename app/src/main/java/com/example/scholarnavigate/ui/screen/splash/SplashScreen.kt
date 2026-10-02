@@ -38,7 +38,6 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.firebaseauthyt.presentation.login_screen.GoogleSignInState
 import com.example.firebaseauthyt.presentation.login_screen.SignInViewModel
 import com.example.scholarnavigate.MainActivity
 import com.example.scholarnavigate.R
@@ -49,9 +48,7 @@ import com.example.scholarnavigate.navigate.navmodule.AuthScreen
 import com.example.scholarnavigate.navigate.navmodule.BottomBarScreen
 import com.example.scholarnavigate.ui.theme.ScholarNavigateTheme
 import com.example.scholarnavigate.ui.theme.primaryLight
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 
 @Composable
 fun AnimatedSplashScreen(navController: NavController) {
@@ -75,14 +72,13 @@ fun AnimatedSplashScreen(navController: NavController) {
         startAnimation = true
         delay(2000)
 
-        withContext(Dispatchers.Main) {
-            navController.popBackStack()
-        }
         showNotification(context = context)
         val isLoggedIn = viewModel.isUserLoggedIn()
 
-        navController.navigate(AuthScreen.Login.route)
-
+        val destination = if (isLoggedIn) Graph.HOME else AuthScreen.Login.route
+        navController.navigate(destination) {
+            popUpTo(AuthScreen.Splash.route) { inclusive = true }
+        }
     }
     Splash(alphaAnim.value)
 }

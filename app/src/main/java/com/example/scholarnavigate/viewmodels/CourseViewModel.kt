@@ -7,7 +7,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.compose.rememberNavController
 import com.example.scholarnavigate.data.database.repositoryInterface.CourseRepository
 import com.example.scholarnavigate.data.database.repositoryInterface.SessionRepository
 import com.example.scholarnavigate.data.database.repositoryInterface.TaskRepository
@@ -37,7 +36,9 @@ class CourseViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val courseId:Int = savedStateHandle["courseId"] ?: 1
+    private val courseId: Int = checkNotNull(savedStateHandle["courseId"]) {
+        "courseId is required — navigate using DashboardScreens.CourseScreen.createCourse(id)"
+    }
 
     // Get The Course Id in the View Model
     private val _state = MutableStateFlow(CourseState())
@@ -117,15 +118,29 @@ class CourseViewModel @Inject constructor(
     val snackBarEvenFlow = _snackbarEventFlow.asSharedFlow()
     private fun updateCourse(){
         viewModelScope.launch {
-            courseRepository.upsertCourse(
-                course = Course(
-                    name = state.value.courseName,
-                    goalHours = state.value.goalStudyHours.toFloatOrNull() ?: 1f,
-                    colors = state.value.courseCardColors.map { it.toArgb() },
-                    courseId = state.value.currentCourseId,
-                    syllabus = state.value.syllabus
+            try {
+                withContext(Dispatchers.IO) {
+                    courseRepository.upsertCourse(
+                        course = Course(
+                            name = state.value.courseName,
+                            goalHours = state.value.goalStudyHours.toFloatOrNull() ?: 1f,
+                            colors = state.value.courseCardColors.map { it.toArgb() },
+                            courseId = state.value.currentCourseId,
+                            syllabus = state.value.syllabus
+                        )
+                    )
+                }
+                _snackbarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar("Course Updated Successfully")
                 )
-            )
+            } catch (e: Exception) {
+                _snackbarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar(
+                        "Couldn't Update Course. ${e.message}",
+                        duration = SnackbarDuration.Long
+                    )
+                )
+            }
         }
     }
 
@@ -188,13 +203,6 @@ class CourseViewModel @Inject constructor(
                         duration = SnackbarDuration.Long
                     )
                 )
-            } catch (e: NullPointerException){
-                _snackbarEventFlow.emit(
-                    SnackBarEvent.ShowSnackBar(
-                        "Couldn't Update Course ${e.message}",
-                        duration = SnackbarDuration.Long
-                    )
-                )
             }
         }
     }
@@ -208,9 +216,11 @@ class CourseViewModel @Inject constructor(
                     SnackBarEvent.ShowSnackBar("Session Deleted Successfully")
                 )
             } catch (e: Exception){
-                SnackBarEvent.ShowSnackBar(
-                    "Couldn't Delete Session. ${e.message}",
-                    duration = SnackbarDuration.Long
+                _snackbarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar(
+                        "Couldn't Delete Session. ${e.message}",
+                        duration = SnackbarDuration.Long
+                    )
                 )
             }
         }

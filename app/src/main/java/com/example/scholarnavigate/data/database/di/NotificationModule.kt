@@ -8,7 +8,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.scholarnavigate.R
 import com.example.scholarnavigate.data.util.Constants
-import com.example.scholarnavigate.data.util.Constants.NOTIFICATION_CHANNEL_ID
+import com.example.scholarnavigate.data.util.Constants.TIMER_CHANNEL_ID
 import com.example.scholarnavigate.ui.screen.dashboard.session.ServiceHelper
 import dagger.Module
 import dagger.Provides
@@ -27,7 +27,7 @@ object NotificationModule {
         @ApplicationContext context: Context
 
     ) : NotificationCompat.Builder {
-        return NotificationCompat.Builder(context,NOTIFICATION_CHANNEL_ID)
+        return NotificationCompat.Builder(context, TIMER_CHANNEL_ID)
             .setContentTitle("Scholar Navigate")
             .setContentText("00:00:00")
             .setSmallIcon(R.drawable.applogo)
