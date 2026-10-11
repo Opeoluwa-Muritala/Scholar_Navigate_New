@@ -129,9 +129,9 @@ private fun CourseScreen(
         }
 
 
-        var isAddSubjectDialogOpen by remember { mutableStateOf(false) }
+        var isAddCourseDialogOpen by remember { mutableStateOf(false) }
         AddCourseDialog(
-            onDissmisRequest = { isAddSubjectDialogOpen = false },
+            onDissmisRequest = { isAddCourseDialogOpen = false },
             courseName = state.courseName,
             studyHours = state.goalStudyHours,
             syllabus = state.syllabus,
@@ -139,9 +139,9 @@ private fun CourseScreen(
             onStudyHoursChange = {onEvent(CourseEvent.OnGoalStudyHoursChange(it))},
             onConfirmButtonClick = {
                 onEvent(CourseEvent.UpdateSubject)
-                isAddSubjectDialogOpen = false
+                isAddCourseDialogOpen = false
                                    },
-            isOpen = isAddSubjectDialogOpen,
+            isOpen = isAddCourseDialogOpen,
             selectedColors = state.courseCardColors,
             onColorChange = {
                 onEvent(CourseEvent.OnCourseCardColorChange(it))
@@ -187,7 +187,7 @@ private fun CourseScreen(
                     title = state.courseName,
                     onBackButtonClick = onBackButtonClick,
                     onDeleteButtonClick = { isDeleteCourseOpen = true },
-                    onEditButtonClick = {isAddSubjectDialogOpen = true},
+                    onEditButtonClick = {isAddCourseDialogOpen = true},
                     scrollBehavior = scrollBehavior
                 )
             },

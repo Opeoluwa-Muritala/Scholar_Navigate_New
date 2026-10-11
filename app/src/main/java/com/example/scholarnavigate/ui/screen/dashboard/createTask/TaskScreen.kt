@@ -224,9 +224,9 @@ private fun TaskScreen(
                         PriorityButton(
                             modifier = Modifier.weight(1f),
                             label = priority.title,
-                            backgroundColor = priority.color,
+                            backgroundColor =  if (priority == state.priority) priority.color else Color.Gray,
                             borderColor = if (priority == state.priority) Color.White else Color.Transparent,
-                            labelColor = if (priority == state.priority) Color.White else Color.White.copy(0.75f),
+                            labelColor = if (priority == state.priority) Color.White else Color.Black.copy(0.75f),
                             onClick = {
                                 onEvent(TaskEvent.OnPriorityChange(priority))}
                             )
@@ -274,12 +274,13 @@ private fun PriorityButton(
     onClick: () -> Unit
 ){
     Box(modifier = modifier
-        .background(backgroundColor)
-        .padding(5.dp)
-        .border(2.dp, borderColor, RoundedCornerShape(5.dp))
-        .padding(5.dp)
+        .padding(2.dp)
+        .background(color = backgroundColor, shape= RoundedCornerShape(5.dp,5.dp,5.dp, 5.dp))
+        .padding(10.dp)
+       // .border(2.dp, borderColor, RoundedCornerShape(5.dp))
         .clickable { onClick() },
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
+        
     )
     {
         Text(text = label, color = labelColor)

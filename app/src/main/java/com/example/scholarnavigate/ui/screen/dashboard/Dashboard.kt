@@ -101,6 +101,7 @@ fun DashboardScreenNavigation(navController: NavController){
         },
     )
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
@@ -135,9 +136,9 @@ fun DashboardScreen(
         }
 
 
-        var isAddSubjectDialogOpen by remember { mutableStateOf(false) }
+        var isAddCourseDialogOpen by remember { mutableStateOf(false) }
         AddCourseDialog(
-            onDissmisRequest = { isAddSubjectDialogOpen = false },
+            onDissmisRequest = { isAddCourseDialogOpen = false },
             courseName = state.courseName,
             studyHours = state.goalStudyHours,
             syllabus = state.syllabus,
@@ -145,9 +146,9 @@ fun DashboardScreen(
             onStudyHoursChange = { onEvent(DashBoardEvent.onGoalStudyHoursChange(it)) },
             onConfirmButtonClick = {
                 onEvent(DashBoardEvent.SaveCourse)
-                isAddSubjectDialogOpen = false
+                isAddCourseDialogOpen = false
             },
-            isOpen = isAddSubjectDialogOpen,
+            isOpen = isAddCourseDialogOpen,
             selectedColors = state.courseCardColors,
             onColorChange = {
                 onEvent(DashBoardEvent.onCourseCardColorChange(it))
@@ -236,7 +237,7 @@ fun DashboardScreen(
                         modifier = Modifier.fillMaxWidth(),
                         courseList = state.courses,
                         onAddCourseClick = {
-                            isAddSubjectDialogOpen = true
+                            isAddCourseDialogOpen = true
                         },
                         onCourseCardClick = { courseId ->
                             onCourseCardClick(courseId)
@@ -323,8 +324,7 @@ private fun DrawerContent(
     ) {
         Column(
             Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
                 Image(
@@ -335,9 +335,6 @@ private fun DrawerContent(
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
             Spacer(modifier = Modifier.height(30.dp))
             Row(
                 Modifier.clickable {

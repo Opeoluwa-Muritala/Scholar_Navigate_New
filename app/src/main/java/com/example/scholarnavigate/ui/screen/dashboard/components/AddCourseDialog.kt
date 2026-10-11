@@ -71,7 +71,7 @@ fun AddCourseDialog(
     syllabusError = when {
         syllabus.isBlank() -> "Please enter Your Syllabus"
         courseName.length < 2 -> "End every line with period '.'"
-        courseName.length < 30 -> "Course name is too long."
+        courseName.length > 5000 -> "Syllabus should be 5000 characters long."
         else -> null
     }
 
@@ -135,10 +135,6 @@ fun AddCourseDialog(
                         value = syllabus.replace(".", ".\n"),
                         onValueChange = onSyllabusChange,
                         label = { Text(text = "Syllabus")},
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        ),
                         isError = syllabusError != null && syllabus.isNotBlank(),
                         supportingText = { Text(text = syllabusError.orEmpty())}
                     )
@@ -155,7 +151,6 @@ fun AddCourseDialog(
             dismissButton = {
                 TextButton(
                     onClick = onDissmisRequest,
-                    enabled = studyHoursError == null && courseNameError == null && syllabusError  == null
                 ) {
                     Text(text = "Cancel")
                 }

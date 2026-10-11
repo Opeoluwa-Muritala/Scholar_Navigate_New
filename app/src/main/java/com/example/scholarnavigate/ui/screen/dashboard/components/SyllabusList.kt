@@ -65,7 +65,8 @@ fun LazyListScope.SyllabusList(
         }
     }
     items(syllabusList){
-        SyllabusItem(syllabus = syllabus)
+        if (syllabus.isEmpty()){}
+        else { SyllabusItem(syllabus = syllabus)}
     }
 }
 
